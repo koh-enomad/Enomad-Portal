@@ -186,6 +186,51 @@ header .brand em{font-style:normal;color:#8ED4E0}
 .soonbox .tag{display:inline-block;font-size:11px;font-weight:700;color:var(--warn);background:var(--warn-soft);
   border-radius:10px;padding:3px 12px;margin-bottom:14px;letter-spacing:.04em}
 
+/* ── 셀프 견적 계산기 ── */
+.q-tabs{display:flex;gap:0;border-bottom:2px solid var(--line);margin-bottom:18px}
+.q-tab{appearance:none;border:none;background:none;cursor:pointer;font-size:14px;font-weight:600;
+  color:var(--ink-3);padding:9px 20px 8px;position:relative}
+.q-tab.on{color:var(--teal-dark)}
+.q-tab.on::after{content:'';position:absolute;left:0;right:0;bottom:-2px;height:3px;background:var(--teal)}
+.q-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+@media(max-width:820px){.q-grid{grid-template-columns:1fr}}
+.q-form{padding:18px 20px}
+.q-sub{font-size:12px;font-weight:700;color:var(--teal-deep);letter-spacing:.03em;margin-bottom:14px}
+.q-radio{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.q-radio label{font-size:13px;color:var(--ink-2);display:flex;align-items:center;gap:7px;cursor:pointer}
+.q-radio input{accent-color:var(--teal)}
+.q-fields{margin-bottom:4px}
+.q-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:520px){.q-row{grid-template-columns:1fr 1fr}}
+.q-opts{margin-top:14px}
+.q-opts label{font-size:13px;color:var(--ink-2);display:flex;align-items:center;gap:7px;cursor:pointer}
+.q-opts input{accent-color:var(--teal)}
+.q-note{font-size:11px;color:var(--ink-3);margin-top:12px;line-height:1.6}
+
+.q-result{padding:20px 22px;min-height:200px}
+.q-result .qr-empty{color:var(--ink-3);font-size:13px;text-align:center;padding:40px 10px}
+.q-result .qr-total{font-size:12px;color:var(--ink-3);margin-bottom:4px}
+.q-result .qr-big{font-family:var(--mono);font-size:30px;font-weight:600;color:var(--teal-deep);letter-spacing:-.02em}
+.q-result .qr-big small{font-size:14px;color:var(--ink-3);font-weight:400}
+.q-result .qr-krw{font-family:var(--mono);font-size:14px;color:var(--ink-2);margin-top:2px}
+.q-result .qr-line{display:flex;justify-content:space-between;align-items:baseline;
+  padding:9px 0;border-bottom:1px solid #EDF3F4;font-size:13px}
+.q-result .qr-line:last-of-type{border-bottom:none}
+.q-result .qr-line .k{color:var(--ink-2)}
+.q-result .qr-line .v{font-family:var(--mono);color:var(--ink);font-weight:500}
+.q-result .qr-sec{font-size:11px;font-weight:700;color:var(--teal-deep);letter-spacing:.04em;
+  margin:16px 0 6px;text-transform:uppercase}
+.q-result .qr-chip{display:inline-block;font-size:11px;font-weight:600;background:var(--teal-soft);
+  color:var(--teal-deep);border-radius:10px;padding:2px 10px;margin-bottom:12px}
+.q-result .qr-atcost{background:var(--warn-soft);border:1px solid #F0DEC0;border-radius:8px;
+  padding:11px 13px;margin-top:14px;font-size:11.5px;color:var(--ink-2);line-height:1.7}
+.q-result .qr-atcost strong{color:var(--warn)}
+.q-result .qr-over{background:var(--warn-soft);border:1px solid #F0DEC0;border-radius:8px;
+  padding:16px;text-align:center;color:var(--warn);font-weight:600;font-size:13px}
+.q-result .qr-warehouse{background:var(--teal-mist);border-radius:8px;padding:11px 13px;margin-top:14px;
+  font-size:11.5px;color:var(--ink-2);line-height:1.7}
+.q-result .qr-warehouse strong{color:var(--teal-dark)}
+
 /* ── modal ── */
 .overlay{position:fixed;inset:0;background:rgba(12,34,40,.55);display:flex;align-items:flex-start;
   justify-content:center;padding:40px 16px;overflow:auto;z-index:50}
@@ -261,7 +306,7 @@ footer{max-width:1100px;margin:0 auto;padding:0 24px 40px;font-size:11.5px;color
     <div class="nav">
       <button class="on" id="nv0" onclick="nav(0)">진행 현황</button>
       <button id="nv1" onclick="nav(1)">해상 항차 스케줄</button>
-      <button id="nv2" onclick="nav(2)">셀프 견적 <span class="soon">준비중</span></button>
+      <button id="nv2" onclick="nav(2)">셀프 견적</button>
     </div>
 
     <div id="pg0">
@@ -290,11 +335,70 @@ footer{max-width:1100px;margin:0 auto;padding:0 24px 40px;font-size:11.5px;color
     </div>
 
     <div id="pg2" class="hidden">
-      <div class="soonbox">
-        <div class="tag">COMING SOON</div>
-        <h2>셀프 견적 확인</h2>
-        <p>박스 수량 · 중량 · 사이즈만 입력하면 항공 특송 / 해상 LCL 예상 견적과
-        리드타임을 즉시 확인할 수 있는 계산기를 준비 중입니다.</p>
+      <div class="intro">
+        박스/팔렛 정보를 입력하면 예상 견적을 즉시 확인할 수 있습니다.
+        <strong>참고용 예상 금액</strong>이며 실제 견적은 화물 확정 후 확정됩니다.<span id="qFxStamp" style="color:var(--ink-3)"></span>
+      </div>
+
+      <div class="q-tabs">
+        <button class="q-tab on" id="qtSea" onclick="qMode('sea')">해상 LCL</button>
+        <button class="q-tab" id="qtAir" onclick="qMode('air')">항공</button>
+      </div>
+
+      <div class="q-grid">
+        <div class="q-form panel">
+          <!-- 해상 입력 -->
+          <div id="qSeaForm">
+            <div class="q-sub">화물 정보 입력</div>
+            <div class="q-radio">
+              <label><input type="radio" name="qSeaType" value="cbm" checked onchange="qSeaTypeChange()"> CBM 직접 입력</label>
+              <label><input type="radio" name="qSeaType" value="pallet" onchange="qSeaTypeChange()"> 팔렛 사이즈</label>
+              <label><input type="radio" name="qSeaType" value="box" onchange="qSeaTypeChange()"> 박스 사이즈만</label>
+            </div>
+
+            <div id="qSeaCbm" class="q-fields">
+              <div class="fld"><label>총 CBM (m³)</label><input id="s_cbm" type="number" step="0.01" placeholder="예: 2.35" oninput="calcSea()"></div>
+            </div>
+            <div id="qSeaPallet" class="q-fields hidden">
+              <div class="q-row">
+                <div class="fld"><label>가로 (cm)</label><input id="p_l" type="number" placeholder="110" oninput="calcSea()"></div>
+                <div class="fld"><label>세로 (cm)</label><input id="p_w" type="number" placeholder="110" oninput="calcSea()"></div>
+                <div class="fld"><label>높이 (cm)</label><input id="p_h" type="number" placeholder="120" oninput="calcSea()"></div>
+                <div class="fld"><label>팔렛 수</label><input id="p_qty" type="number" value="1" min="1" oninput="calcSea()"></div>
+              </div>
+            </div>
+            <div id="qSeaBox" class="q-fields hidden">
+              <div class="q-row">
+                <div class="fld"><label>박스 가로 (cm)</label><input id="b_l" type="number" placeholder="40" oninput="calcSea()"></div>
+                <div class="fld"><label>박스 세로 (cm)</label><input id="b_w" type="number" placeholder="30" oninput="calcSea()"></div>
+                <div class="fld"><label>박스 높이 (cm)</label><input id="b_h" type="number" placeholder="30" oninput="calcSea()"></div>
+                <div class="fld"><label>박스 수량</label><input id="b_qty" type="number" placeholder="20" oninput="calcSea()"></div>
+              </div>
+              <div class="q-note">※ 팔렛 사이즈를 모를 경우, 110×110cm 팔렛에 적재하는 기준으로 CBM을 추정합니다.</div>
+            </div>
+          </div>
+
+          <!-- 항공 입력 -->
+          <div id="qAirForm" class="hidden">
+            <div class="q-sub">화물 정보 입력</div>
+            <div class="q-row">
+              <div class="fld"><label>가로 (cm)</label><input id="a_l" type="number" placeholder="60" oninput="calcAir()"></div>
+              <div class="fld"><label>세로 (cm)</label><input id="a_w" type="number" placeholder="40" oninput="calcAir()"></div>
+              <div class="fld"><label>높이 (cm)</label><input id="a_h" type="number" placeholder="40" oninput="calcAir()"></div>
+            </div>
+            <div class="q-row">
+              <div class="fld"><label>박스 수량</label><input id="a_qty" type="number" value="1" min="1" placeholder="5" oninput="calcAir()"></div>
+              <div class="fld"><label>실중량 합계 (kg)</label><input id="a_kg" type="number" step="0.1" placeholder="60" oninput="calcAir()"></div>
+            </div>
+            <div class="q-opts">
+              <label><input type="checkbox" id="a_permit" onchange="calcAir()"> 면장 발급 대행 (+₩33,000)</label>
+            </div>
+            <div class="q-note">※ 부피중량 = 가로×세로×높이 ÷ 5000. 실중량과 비교해 큰 값으로 청구됩니다.</div>
+          </div>
+        </div>
+
+        <!-- 결과 -->
+        <div class="q-result panel" id="qResult"></div>
       </div>
     </div>
   </div>
@@ -518,6 +622,7 @@ function enter(){
   document.getElementById('whoRole').textContent = session.label || 'CUSTOMER';
   document.getElementById('toolbar').classList.toggle('hidden', !canEdit());
   render();
+  loadFxRate();
 }
 function nav(i){
   [0,1,2].forEach(n=>{
@@ -525,6 +630,7 @@ function nav(i){
     document.getElementById('nv'+n).classList.toggle('on', n===i);
   });
   if(i===1) renderVoyages();
+  if(i===2){ loadFxRate(); qMode(qCurrentMode); }
 }
 
 /* ── 필터 ── */
@@ -904,6 +1010,259 @@ function voyCard(v, isNext){
 
 function setVoyFilter(f){ voyMonthFilter=f; renderVoyages(); }
 
+/* ══════════ 셀프 견적 계산기 ══════════
+   ★ EDITABLE — 요율표 갱신 시 이 상수 블록만 수정하세요 (기준: 2026년 6월). */
+const RATE = {
+  usdKrwFallback: 1350,    // 고시환율 조회 실패 시 참고값
+  eximAuthKey: 'dhPKlKHIKqGt7k50ZIc5dD9jwfV1FJSZ',  // 공공데이터포털 한국수출입은행 환율 API
+  air: {
+    perKg: 13,            // $/kg (10kg 이상 flat)
+    minKg: 10,            // 최소 과금 중량
+    volDivisor: 5000,     // 부피중량 = L*W*H/5000
+    permitKrw: 33000,     // 면장 발급 대행 (원)
+    unload: { box: 3, pallet: 15, label: 0.5 },  // 미국 출고비 (개당 $)
+  },
+  sea: {
+    // CBM 요율표 (KOREA OCEAN DOOR TO ENOMAD WAREHOUSE LAX, DDP)
+    table: {0.5:461.90, 1:530.30, 2:803.90, 3:1068.95, 4:1316.05, 5:1569.70,
+            6:1820.50, 7:2047.64, 8:2267.95, 9:2491.10, 10:2676.92},
+    maxCbm: 10,
+    permitMinKrw: 33000,  // 면장 대행 최소 (At Cost, 최소 33,000원)
+    palletBase: { w: 110, d: 110, thickness: 12 },  // 팔렛 미상 시 적재 기준 (cm)
+  }
+};
+
+let qCurrentMode = 'sea';
+function qMode(m){
+  qCurrentMode = m;
+  document.getElementById('qtSea').classList.toggle('on', m==='sea');
+  document.getElementById('qtAir').classList.toggle('on', m==='air');
+  document.getElementById('qSeaForm').classList.toggle('hidden', m!=='sea');
+  document.getElementById('qAirForm').classList.toggle('hidden', m!=='air');
+  if(m==='sea') calcSea(); else calcAir();
+}
+function qSeaTypeChange(){
+  const t = document.querySelector('input[name="qSeaType"]:checked').value;
+  document.getElementById('qSeaCbm').classList.toggle('hidden', t!=='cbm');
+  document.getElementById('qSeaPallet').classList.toggle('hidden', t!=='pallet');
+  document.getElementById('qSeaBox').classList.toggle('hidden', t!=='box');
+  calcSea();
+}
+
+const won = n => '₩'+Math.round(n).toLocaleString('ko-KR');
+const usd = n => '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const numOf = id => parseFloat(document.getElementById(id).value)||0;
+
+/* ── 환율 (견적일 기준 · USD 송금 고시환율) ── */
+let FX = { rate:null, date:null, loading:false, viewedOn:null };
+function kstYmd(daysAgo=0){
+  const kst = new Date(new Date().toLocaleString('en-US', {timeZone:'Asia/Seoul'}));
+  kst.setDate(kst.getDate() - daysAgo);
+  return kst.getFullYear()
+    +String(kst.getMonth()+1).padStart(2,'0')
+    +String(kst.getDate()).padStart(2,'0');
+}
+function fmtYmd(ymd){ return String(ymd||'').replace(/(\d{4})(\d{2})(\d{2})/,'$1-$2-$3'); }
+function usdKrwNow(){ return FX.rate || RATE.usdKrwFallback; }
+function parseEximUsd(data){
+  if(!Array.isArray(data)) return null;
+  const usd = data.find(r => Number(r.result) === 1 && String(r.cur_unit||'').startsWith('USD'));
+  if(!usd || !usd.tts) return null;
+  const rate = parseFloat(String(usd.tts).replace(/,/g,''));
+  return rate > 0 ? rate : null;
+}
+async function fetchEximJson(url){
+  try{
+    const res = await fetch(url);
+    if(!res.ok) return null;
+    return await res.json();
+  }catch(e){
+    try{
+      const proxy = 'https://api.allorigins.win/raw?url='+encodeURIComponent(url);
+      const res = await fetch(proxy);
+      if(!res.ok) return null;
+      return JSON.parse(await res.text());
+    }catch(e2){ return null; }
+  }
+}
+async function fetchEximForDate(searchdate){
+  const key = RATE.eximAuthKey;
+  if(!key) return null;
+  const url = 'https://oapi.koreaexim.go.kr/site/program/financial/exchangeJSON'
+    +'?authkey='+encodeURIComponent(key)+'&searchdate='+searchdate+'&data=AP01';
+  const rate = parseEximUsd(await fetchEximJson(url));
+  return rate ? {rate, date:searchdate} : null;
+}
+function applyFx(fx){
+  FX = {rate:fx.rate, date:fx.date, loading:false, viewedOn:kstYmd()};
+  sessionStorage.setItem('enomad_fx', JSON.stringify(FX));
+  updateFxStamp();
+  qRefreshResult();
+}
+function fmtFxRate(r){
+  return Number(r).toLocaleString('ko-KR',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function fmtFxShort(){
+  if(FX.rate && FX.date){
+    return '수출입은행 송금 고시 '+fmtFxRate(FX.rate)+'원 · '+fmtYmd(FX.date)+' 기준';
+  }
+  return '환율 '+RATE.usdKrwFallback.toLocaleString('ko-KR')+'원 (고시환율 미연동·참고값)';
+}
+function updateFxStamp(){
+  const el = document.getElementById('qFxStamp');
+  if(!el) return;
+  el.textContent = FX.loading ? ' · 환율 조회 중…' : (' · '+fmtFxShort());
+}
+function qRefreshResult(){
+  if(qCurrentMode==='sea') calcSea(); else calcAir();
+}
+async function loadFxRate(force=false){
+  const viewedOn = kstYmd();
+  if(!force){
+    const cached = sessionStorage.getItem('enomad_fx');
+    if(cached){
+      const c = JSON.parse(cached);
+      if(c.viewedOn === viewedOn && c.rate){
+        FX = {...c, loading:false};
+        updateFxStamp();
+        return;
+      }
+    }
+    if(FX.rate && FX.viewedOn === viewedOn) return;
+  }
+
+  FX.loading = true;
+  updateFxStamp();
+
+  if(window.__fxMeta?.rate){
+    applyFx({rate:window.__fxMeta.rate, date:window.__fxMeta.date || viewedOn});
+    return;
+  }
+
+  if(RATE.eximAuthKey){
+    // 견적 확인일 고시환율 우선, 휴일·미고시 시 직전 영업일
+    for(let i=0; i<10; i++){
+      const fx = await fetchEximForDate(kstYmd(i));
+      if(fx){ applyFx(fx); return; }
+    }
+  }
+
+  FX = {rate:null, date:null, loading:false, viewedOn};
+  updateFxStamp();
+  qRefreshResult();
+}
+
+/* ── 해상 견적 ── */
+function ceilHalf(x){
+  // 0.5 CBM 단위 올림 (3.4→3.5, 3.5→3.5, 3.6→4.0)
+  return Math.round(Math.ceil((x - 1e-9) * 2)) / 2;
+}
+function fmtCbm(v){ return (Math.round(v * 2) / 2).toFixed(1); }
+function seaRate(cbm){
+  let billed = ceilHalf(cbm);
+  if(billed < 0.5) billed = 0.5;
+  if(billed > RATE.sea.maxCbm) return {billed, rate:null, over:true};
+
+  const t = RATE.sea.table;
+  if(t[billed] != null) return {billed, rate:t[billed]};
+
+  // 0.5 단위 청구: 정수 구간 사이 선형 보간 (예: 3.5 → 3·4 CBM 요율 중간)
+  const lo = Math.floor(billed);
+  const hi = lo + 1;
+  if(t[lo] != null && t[hi] != null){
+    const frac = billed - lo;
+    const rate = t[lo] + (t[hi] - t[lo]) * frac;
+    return {billed, rate: Math.round(rate * 100) / 100};
+  }
+
+  const keys = Object.keys(t).map(Number).sort((a,b)=>a-b);
+  for(const k of keys){ if(k>=billed) return {billed, rate:t[k], tier:k}; }
+  return {billed, rate:null, over:true};
+}
+function calcSea(){
+  const box = document.getElementById('qResult');
+  const type = document.querySelector('input[name="qSeaType"]:checked').value;
+  let cbm = 0, calcNote = '';
+
+  if(type==='cbm'){
+    cbm = numOf('s_cbm');
+  } else if(type==='pallet'){
+    const l=numOf('p_l'), w=numOf('p_w'), h=numOf('p_h'), q=numOf('p_qty')||1;
+    cbm = (l*w*h/1e6)*q;
+    if(l&&w&&h) calcNote = q+'팔렛 × '+l+'×'+w+'×'+h+'cm = '+cbm.toFixed(3)+' CBM';
+  } else { // box → 110×110 팔렛 적재 추정
+    const l=numOf('b_l'), w=numOf('b_w'), h=numOf('b_h'), q=numOf('b_qty');
+    if(l&&w&&h&&q){
+      const boxVol = l*w*h*q;                  // cm³
+      const base = RATE.sea.palletBase;
+      const stackH = boxVol/(base.w*base.d);   // 적재 높이
+      const totalH = stackH + base.thickness;
+      cbm = (base.w*base.d*totalH)/1e6;
+      calcNote = '박스 '+q+'개(총 '+(boxVol/1e6).toFixed(3)+'m³) → '+base.w+'×'+base.d+'cm 팔렛 적재 시 약 '+cbm.toFixed(3)+' CBM';
+    }
+  }
+
+  if(!cbm){ box.innerHTML = '<div class="qr-empty">화물 정보를 입력하면<br>예상 견적이 표시됩니다.</div>'; return; }
+
+  const r = seaRate(cbm);
+  if(r.over){
+    box.innerHTML = '<div class="qr-chip">해상 LCL · DDP</div>'
+      +'<div class="qr-line"><span class="k">입력 부피</span><span class="v">'+cbm.toFixed(3)+' CBM</span></div>'
+      +'<div class="qr-line"><span class="k">청구 CBM (0.5 CBM 단위)</span><span class="v">'+fmtCbm(r.billed)+' CBM</span></div>'
+      +'<div class="qr-over">10 CBM 초과는 FCL(컨테이너) 검토가 유리할 수 있습니다.<br>별도 문의: sel@enomad.co.kr</div>';
+    return;
+  }
+
+  const krw = r.rate*usdKrwNow();
+  box.innerHTML = '<div class="qr-chip">해상 LCL · DDP (부산 → LA 창고)</div>'
+    +'<div class="qr-total">예상 운임 (올인)</div>'
+    +'<div class="qr-big">'+usd(r.rate)+'</div>'
+    +'<div class="qr-krw">≈ '+won(krw)+' <small>('+fmtFxShort()+')</small></div>'
+    + (calcNote?'<div class="qr-note" style="margin-top:10px">'+calcNote+'</div>':'')
+    +'<div class="qr-sec">산정 내역</div>'
+    +'<div class="qr-line"><span class="k">입력 부피</span><span class="v">'+cbm.toFixed(3)+' CBM</span></div>'
+    +'<div class="qr-line"><span class="k">청구 CBM <span style="color:var(--ink-3);font-size:11px">(0.5 CBM 단위 올림)</span></span><span class="v">'+fmtCbm(r.billed)+' CBM</span></div>'
+    +'<div class="qr-line"><span class="k">적용 요율</span><span class="v">'+usd(r.rate)+'</span></div>'
+    +'<div class="qr-atcost"><strong>별도 비용 (At Cost)</strong><br>'
+      +'· 관세(DUTY): HS Code별 상이, 실비 청구<br>'
+      +'· 면장 발급 대행: 실비 (최소 ₩33,000)</div>'
+    +'<div class="qr-note" style="margin-top:10px">※ 위 운임은 국내 픽업 + 통관대행 포함, ENOMAD 미국 창고 도착까지의 올인 비용입니다.</div>';
+}
+
+/* ── 항공 견적 ── */
+function calcAir(){
+  const box = document.getElementById('qResult');
+  const l=numOf('a_l'), w=numOf('a_w'), h=numOf('a_h'), q=numOf('a_qty')||1, kg=numOf('a_kg');
+
+  if(!(l&&w&&h) && !kg){ box.innerHTML = '<div class="qr-empty">화물 정보를 입력하면<br>예상 견적이 표시됩니다.</div>'; return; }
+
+  const volKg = (l&&w&&h) ? (l*w*h/RATE.air.volDivisor)*q : 0;
+  const rawChargeable = Math.max(volKg, kg);
+  const chargeable = Math.max(rawChargeable, RATE.air.minKg);   // 최소 10kg
+  const freight = chargeable*RATE.air.perKg;
+  const permit = document.getElementById('a_permit').checked ? RATE.air.permitKrw : 0;
+  const freightKrw = freight*usdKrwNow();
+  const totalKrw = freightKrw + permit;
+  const heavier = volKg>kg ? '부피중량' : '실중량';
+
+  box.innerHTML = '<div class="qr-chip">항공 · KR → LA 창고 (올인)</div>'
+    +'<div class="qr-total">예상 운임'+(permit?' + 면장':'')+'</div>'
+    +'<div class="qr-big">'+usd(freight)+(permit?' <small>+ ₩33,000</small>':'')+'</div>'
+    +'<div class="qr-krw">≈ '+won(totalKrw)+' <small>('+fmtFxShort()+')</small></div>'
+    +'<div class="qr-sec">중량 산정</div>'
+    +'<div class="qr-line"><span class="k">실중량</span><span class="v">'+(kg?kg.toFixed(1)+' kg':'—')+'</span></div>'
+    +'<div class="qr-line"><span class="k">부피중량 <span style="color:var(--ink-3);font-size:11px">(L×W×H÷5000×'+q+')</span></span><span class="v">'+(volKg?volKg.toFixed(2)+' kg':'—')+'</span></div>'
+    +'<div class="qr-line"><span class="k">청구중량 <span style="color:var(--ink-3);font-size:11px">('+heavier+'·최소10kg)</span></span><span class="v">'+chargeable.toFixed(2)+' kg</span></div>'
+    +'<div class="qr-line"><span class="k">운임 ('+chargeable.toFixed(1)+'kg × $13)</span><span class="v">'+usd(freight)+'</span></div>'
+    + (permit?'<div class="qr-line"><span class="k">면장 발급 대행</span><span class="v">₩33,000</span></div>':'')
+    +'<div class="qr-atcost"><strong>미국 도착 후 출고비 (별도)</strong><br>'
+      +'· 출고비: 박스 $3 / 팔렛 $15 · 라벨 $0.5<br>'
+      +'· 라스트마일 배송: At Cost (실비)</div>'
+    +'<div class="qr-warehouse"><strong>국내 창고 입고 안내</strong><br>'
+      +'경기 김포시 고촌읍 인향로210번길 24-25<br>담당 최정용 · 010-3251-6102<br>'
+      +'<span style="color:var(--ink-3)">※ 운임은 국내 창고 입고 기준입니다. 국내 픽업 별도.</span></div>';
+}
+
 /* ══════════ Firestore 실시간 브리지 ══════════
    하단 module 스크립트가 Firestore 스냅샷을 받아 이 함수들을 호출합니다. */
 function setLive(on){
@@ -924,6 +1283,14 @@ window.__onShipments = function(rows){
 window.__onFbError = function(){ setLive(false); };
 window.__onMeta = function(meta){
   if(meta && meta.syncedAt){ DATA.exported = String(meta.syncedAt).slice(0,10); if(session) render(); }
+  const tts = meta && (meta.usdTts ?? meta.usd_tts);
+  if(tts){
+    window.__fxMeta = {
+      rate: Number(tts),
+      date: String(meta.fxDate || meta.fx_date || '').replace(/-/g,'') || kstYmd()
+    };
+    if(session) loadFxRate(true);
+  }
 };
 /* Firestore voyages 스냅샷 → 항차 스케줄 갱신 */
 window.__onVoyages = function(rows){
