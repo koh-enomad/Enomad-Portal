@@ -199,7 +199,7 @@ footer{max-width:1100px;margin:0 auto;padding:0 24px 40px;font-size:11.5px;color
     <div class="logo">ENOMAD <em>Tracking</em></div>
     <p>애드캐리 파트너 · 고객사 전용 화물 진행 현황 포털입니다.<br>발급받은 접속 코드를 입력하세요.</p>
     <label for="code">접속 코드</label>
-    <input id="code" type="text" placeholder="예: QRING-2606" autocomplete="off"
+    <input id="code" type="text" placeholder="예: QRING-XXXXXX" autocomplete="off"
       onkeydown="if(event.key==='Enter')login()">
     <button onclick="login()">진행 현황 확인</button>
     <div class="err" id="gateErr"></div>
@@ -321,7 +321,7 @@ footer{max-width:1100px;margin:0 auto;padding:0 24px 40px;font-size:11.5px;color
     <h2>접속 코드 관리</h2>
     <div class="codelist" id="codeList"></div>
     <div class="codeadd">
-      <div class="fld"><label>새 코드</label><input id="c_code" class="mono" placeholder="예: NEWCO-2607" style="text-transform:uppercase"></div>
+      <div class="fld"><label>새 코드</label><input id="c_code" class="mono" placeholder="예: NEWCO-A1B2C3" style="text-transform:uppercase"></div>
       <div class="fld"><label>업체명</label><input id="c_name" placeholder="예: 뉴컴퍼니"></div>
       <div class="fld" style="flex:0 0 auto;min-width:auto"><label>권한</label>
         <select id="c_role"><option value="customer">업체 (본인 건만)</option><option value="viewAll">애드캐리 (전체 조회)</option><option value="admin">이노마드 (전체 + 편집)</option></select>
@@ -342,45 +342,45 @@ footer{max-width:1100px;margin:0 auto;padding:0 24px 40px;font-size:11.5px;color
      ================================================================ -->
 <script type="application/json" id="portal-state">{
  "access": {
-  "ENOMAD-HQ26": {
+  "ENOMAD-V3XB5G": {
    "role": "admin",
    "name": "이노마드",
    "label": "ADMIN"
   },
-  "ADCARRY-2026": {
+  "ADCARRY-U7SY2E": {
    "role": "viewAll",
    "name": "애드캐리",
    "label": "PARTNER"
   },
-  "QRING-2606": {
+  "QRING-TWV6C7": {
    "company": "큐링",
    "name": "큐링"
   },
-  "GREEN-2603": {
+  "GREEN-NJ2XQ4": {
    "company": "그린토크",
    "name": "그린토크"
   },
-  "JDC-2604": {
+  "JDC-7K7ZMZ": {
    "company": "제이디씨",
    "name": "제이디씨"
   },
-  "FUN-2604": {
+  "FUN-FDDDQW": {
    "company": "펀샤인",
    "name": "펀샤인"
   },
-  "LEVI-2604": {
+  "LEVI-9CW9S2": {
    "company": "레비시아",
    "name": "레비시아"
   },
-  "BELONG-2605": {
+  "BELONG-QE8PUT": {
    "company": "빌롱스카프",
    "name": "빌롱스카프"
   },
-  "MENTO-2606": {
+  "MENTO-KRFM2F": {
    "company": "멘토클리닉",
    "name": "멘토클리닉"
   },
-  "SATER-2602": {
+  "SATER-ZWW4N7": {
    "company": "새터",
    "name": "새터"
   }
