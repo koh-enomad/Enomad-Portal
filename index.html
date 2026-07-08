@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENOMAD 화물 트래킹 — 애드캐리 파트너 포털</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- ★ Firebase SDK (v10 modular, CDN) — firebaseConfig를 아래 <script type="module">에서 채우세요 -->
+<style>
+:root{
+  --teal:#3B9CAD; --teal-deep:#22606C; --teal-dark:#174650; --teal-soft:#E3F1F4; --teal-mist:#F2F8F9;
+  --ink:#16262C; --ink-2:#41565E; --ink-3:#7A8E95;
+  --line:#D9E4E7; --bg:#F5F8F9; --card:#FFFFFF;
+  --air:#2E6FA3; --air-soft:#E7F0F8;
+  --ok:#2E8B57; --ok-soft:#E4F3EA;
+  --warn:#C77B27; --warn-soft:#FBF0DF;
+  --red:#B33A3A; --red-soft:#F9E8E8;
+  --mono:'IBM Plex Mono',monospace; --sans:'IBM Plex Sans KR',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.55}
+button{font-family:var(--sans)}
+
+/* ── access gate ── */
+#gate{min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(160deg,var(--teal-dark) 0%,var(--teal-deep) 60%,var(--teal) 130%);padding:24px}
+.gatebox{background:var(--card);border-radius:12px;padding:38px 36px 32px;width:100%;max-width:400px;
+  box-shadow:0 20px 60px rgba(10,40,48,.35)}
+.gatebox .logo{font-weight:700;font-size:22px;letter-spacing:.05em;color:var(--teal-dark)}
+.gatebox .logo em{font-style:normal;color:var(--teal)}
+.gatebox p{font-size:13px;color:var(--ink-3);margin:8px 0 24px}
+.gatebox label{display:block;font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:6px}
+.gatebox input{width:100%;border:1px solid var(--line);border-radius:8px;padding:12px 14px;
+  font-family:var(--mono);font-size:15px;letter-spacing:.06em;text-transform:uppercase}
+.gatebox input:focus{outline:2px solid var(--teal);border-color:var(--teal)}
+.gatebox button{width:100%;margin-top:14px;background:var(--teal-deep);color:#fff;border:none;
+  border-radius:8px;padding:12px;font-size:15px;font-weight:600;cursor:pointer}
+.gatebox button:hover{background:var(--teal-dark)}
+.gatebox .err{color:var(--red);font-size:12.5px;margin-top:10px;min-height:18px}
+.gatebox .foot{margin-top:20px;font-size:11.5px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:14px}
+
+/* ── app ── */
+#app{display:none}
+header{background:var(--teal-dark);color:#fff;padding:16px 26px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header .brand{font-weight:700;font-size:18px;letter-spacing:.04em}
+header .brand em{font-style:normal;color:#8ED4E0}
+.who{margin-left:auto;display:flex;align-items:center;gap:12px}
+.who .name{font-size:13px;color:#D7EBEF}
+.who .live{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:#B9D8DE;
+  background:rgba(255,255,255,.08);border-radius:12px;padding:3px 10px}
+.who .live .dot{width:7px;height:7px;border-radius:50%;background:#8FB4BC}
+.who .live.on .dot{background:#5FD08A;box-shadow:0 0 0 0 rgba(95,208,138,.5);animation:livepulse 2.4s infinite}
+.who .live.off .dot{background:#E0906A}
+@keyframes livepulse{0%{box-shadow:0 0 0 0 rgba(95,208,138,.5)}70%{box-shadow:0 0 0 6px rgba(95,208,138,0)}100%{box-shadow:0 0 0 0 rgba(95,208,138,0)}}
+.who .role{font-size:10.5px;font-weight:700;background:var(--teal);padding:2px 9px;border-radius:10px;letter-spacing:.05em}
+.who button{background:none;border:1px solid #4E828D;color:#B9D8DE;border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer}
+.who button:hover{border-color:#8ED4E0;color:#fff}
+
+.wrap{max-width:1100px;margin:0 auto;padding:24px 24px 60px}
+
+.nav{display:flex;gap:4px;border-bottom:2px solid var(--line);margin-bottom:22px}
+.nav>button{appearance:none;border:none;background:none;cursor:pointer;font-size:14.5px;font-weight:600;
+  color:var(--ink-3);padding:11px 18px 9px;position:relative}
+.nav>button.on{color:var(--teal-dark)}
+.nav>button.on::after{content:'';position:absolute;left:0;right:0;bottom:-2px;height:3px;background:var(--teal)}
+.nav .soon{font-size:9.5px;font-weight:700;color:var(--warn);background:var(--warn-soft);
+  border-radius:8px;padding:1px 7px;margin-left:6px;vertical-align:2px;letter-spacing:.03em}
+
+
+
+.intro{background:var(--teal-soft);border:1px solid #C6E0E6;border-radius:8px;padding:12px 16px;
+  font-size:13px;color:var(--teal-dark);margin-bottom:16px}
+.intro strong{font-weight:700}
+
+/* admin toolbar */
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px;
+  background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.toolbar .tt{font-size:11px;font-weight:700;color:var(--teal-deep);letter-spacing:.05em;margin-right:4px}
+.tbtn{appearance:none;border:1px solid var(--teal-deep);background:var(--teal-deep);color:#fff;
+  border-radius:6px;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer}
+.tbtn:hover{background:var(--teal-dark)}
+.tbtn.ghost{background:var(--card);color:var(--teal-deep)}
+.tbtn.ghost:hover{background:var(--teal-soft)}
+.tbtn.dl{border-color:var(--ok);background:var(--ok)}
+.tbtn.dl:hover{filter:brightness(.92)}
+.dirty{font-size:11.5px;color:var(--warn);font-weight:600;margin-left:auto}
+.ssot-note{font-size:11.5px;color:var(--ink-3)}
+
+.cofilter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+.cofilter .cl{font-size:12px;color:var(--ink-3)}
+.chip{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--ink-2);
+  font-size:12.5px;padding:5px 13px;border-radius:15px;cursor:pointer}
+.chip.on{background:var(--teal-dark);border-color:var(--teal-dark);color:#fff}
+
+/* shipment cards */
+.cards{display:flex;flex-direction:column;gap:14px}
+.ship{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.ship .top{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid #EDF3F4;flex-wrap:wrap}
+.ship .badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 11px;border-radius:12px;white-space:nowrap}
+.b-sea{background:var(--teal-soft);color:var(--teal-deep)}
+.b-air{background:var(--air-soft);color:#1E4E75}
+.b-stat{background:var(--warn-soft);color:var(--warn)}
+.b-stat.mid{background:var(--teal-soft);color:var(--teal-deep)}
+.b-stat.fin{background:var(--ok-soft);color:var(--ok)}
+.ship.donecard{opacity:.85}
+.ship.donecard .top{background:var(--teal-mist)}
+.ship.donecard .tstep.done .dot,.ship.donecard .tstep.done .bar{background:var(--ok);border-color:var(--ok)}
+.ship .co{font-size:16px;font-weight:700}
+.ship .ref{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.editbtns{margin-left:auto;display:flex;gap:6px}
+.ebtn{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--ink-2);
+  border-radius:6px;padding:4px 11px;font-size:12px;cursor:pointer}
+.ebtn:hover{border-color:var(--teal);color:var(--teal-deep)}
+.ebtn.del:hover{border-color:var(--red);color:var(--red)}
+
+.ship .body{padding:18px 20px 20px}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px 24px;margin-bottom:20px}
+.meta .mk{font-size:11px;color:var(--ink-3);margin-bottom:2px}
+.meta .mv{font-size:13px;font-weight:500}
+
+.track{display:flex;align-items:flex-start}
+.tstep{flex:1;display:flex;flex-direction:column;align-items:center;position:relative;min-width:0}
+.tstep .dot{width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid #CBDCE0;z-index:1;
+  display:flex;align-items:center;justify-content:center}
+.tstep.done .dot{background:var(--teal);border-color:var(--teal)}
+.tstep.done .dot::after{content:'✓';color:#fff;font-size:11px;font-weight:700}
+.tstep.now .dot{border-color:var(--teal);background:#fff;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(59,156,173,.35)}50%{box-shadow:0 0 0 7px rgba(59,156,173,0)}}
+.tstep .bar{position:absolute;top:10px;left:-50%;width:100%;height:3px;background:#CBDCE0}
+.tstep:first-child .bar{display:none}
+.tstep.done .bar,.tstep.now .bar{background:var(--teal)}
+.ship.air .tstep.done .dot,.ship.air .tstep.done .bar,.ship.air .tstep.now .bar{background:var(--air);border-color:var(--air)}
+.ship.air .tstep.done .dot{border-color:var(--air)}
+.ship.air .tstep.now .dot{border-color:var(--air);background:#fff}
+.tstep .tl{margin-top:8px;font-size:12px;font-weight:600;color:var(--ink-3);text-align:center}
+.tstep.done .tl,.tstep.now .tl{color:var(--ink)}
+.tstep .td{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);margin-top:2px;text-align:center}
+
+.empty{background:var(--card);border:1px dashed var(--line);border-radius:10px;padding:44px 20px;text-align:center;color:var(--ink-3)}
+.empty .big{font-size:15px;font-weight:600;color:var(--ink-2);margin-bottom:6px}
+.secdiv{display:flex;align-items:center;gap:12px;margin:10px 0 2px;color:var(--ink-3);font-size:12px;font-weight:600;letter-spacing:.03em}
+.secdiv::before,.secdiv::after{content:'';flex:1;height:1px;background:var(--line)}
+
+.soonbox{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:40px 28px;text-align:center}
+.soonbox h2{font-size:17px;color:var(--teal-dark);margin-bottom:10px}
+.soonbox p{font-size:13px;color:var(--ink-3);max-width:480px;margin:0 auto;line-height:1.8}
+.soonbox .tag{display:inline-block;font-size:11px;font-weight:700;color:var(--warn);background:var(--warn-soft);
+  border-radius:10px;padding:3px 12px;margin-bottom:14px;letter-spacing:.04em}
+
+/* ── modal ── */
+.overlay{position:fixed;inset:0;background:rgba(12,34,40,.55);display:flex;align-items:flex-start;
+  justify-content:center;padding:40px 16px;overflow:auto;z-index:50}
+.modal{background:var(--card);border-radius:12px;width:100%;max-width:620px;padding:24px 26px 22px;
+  box-shadow:0 24px 70px rgba(10,40,48,.4)}
+.modal h2{font-size:16px;color:var(--teal-dark);margin-bottom:18px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+.fgrid .full{grid-column:1/-1}
+.fld label{display:block;font-size:11.5px;font-weight:600;color:var(--ink-2);margin-bottom:4px}
+.fld input,.fld select{width:100%;border:1px solid var(--line);border-radius:6px;padding:8px 10px;
+  font-family:var(--sans);font-size:13px;background:#fff;color:var(--ink)}
+.fld input:focus,.fld select:focus{outline:2px solid var(--teal);border-color:var(--teal)}
+.fld input.mono{font-family:var(--mono)}
+.fld .hint{font-size:10.5px;color:var(--ink-3);margin-top:3px}
+.mact{display:flex;gap:10px;margin-top:22px;justify-content:flex-end}
+.mact .cancel{background:var(--card);border:1px solid var(--line);color:var(--ink-2);border-radius:7px;padding:9px 18px;font-size:13px;cursor:pointer}
+.mact .save{background:var(--teal-deep);border:none;color:#fff;border-radius:7px;padding:9px 22px;font-size:13px;font-weight:600;cursor:pointer}
+.mact .save:hover{background:var(--teal-dark)}
+.seafields,.airfields{display:contents}
+
+/* code manager */
+.codelist{border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:14px}
+.coderow{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid #EDF3F4;font-size:13px}
+.coderow:last-child{border-bottom:none}
+.coderow .cc{font-family:var(--mono);font-size:12.5px;width:150px;color:var(--teal-deep);font-weight:600}
+.coderow .cn2{flex:1}
+.coderow .cr{font-size:10.5px;font-weight:700;color:var(--teal-deep);background:var(--teal-soft);border-radius:9px;padding:2px 8px}
+.coderow .cx{appearance:none;border:none;background:none;color:var(--ink-3);cursor:pointer;font-size:15px;padding:2px 6px}
+.coderow .cx:hover{color:var(--red)}
+.codeadd{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}
+.codeadd .fld{flex:1;min-width:130px}
+
+footer{max-width:1100px;margin:0 auto;padding:0 24px 40px;font-size:11.5px;color:var(--ink-3)}
+.hidden{display:none!important}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+@media(max-width:640px){
+  .wrap{padding:16px 12px 40px}
+  .tstep .tl{font-size:10.5px}
+  .ship .body{padding:14px 12px 16px}
+  .fgrid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ 접속 게이트 ═══════════ -->
+<div id="gate">
+  <div class="gatebox">
+    <div class="logo">ENOMAD <em>Tracking</em></div>
+    <p>애드캐리 파트너 · 고객사 전용 화물 진행 현황 포털입니다.<br>발급받은 접속 코드를 입력하세요.</p>
+    <label for="code">접속 코드</label>
+    <input id="code" type="text" placeholder="예: QRING-2606" autocomplete="off"
+      onkeydown="if(event.key==='Enter')login()">
+    <button onclick="login()">진행 현황 확인</button>
+    <div class="err" id="gateErr"></div>
+    <div class="foot">코드가 없거나 분실한 경우 담당자에게 문의하세요.<br>ENOMAD 이노마드 · sel@enomad.co.kr</div>
+  </div>
+</div>
+
+<!-- ═══════════ 포털 본문 ═══════════ -->
+<div id="app">
+  <header>
+    <span class="brand">ENOMAD <em>Tracking</em></span>
+    <div class="who">
+      <span class="live" id="liveStatus" title="실시간 연결 상태"><span class="dot"></span><span id="liveText">연결 중…</span></span>
+      <span class="name" id="whoName"></span>
+      <span class="role" id="whoRole"></span>
+      <button onclick="logout()">로그아웃</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="nav">
+      <button class="on" id="nv0" onclick="nav(0)">진행 현황</button>
+      <button id="nv1" onclick="nav(1)">해상 항차 스케줄 <span class="soon">준비중</span></button>
+      <button id="nv2" onclick="nav(2)">셀프 견적 <span class="soon">준비중</span></button>
+    </div>
+
+    <div id="pg0">
+      <div class="intro" id="introMsg"></div>
+
+      <!-- 관리자 전용 편집 툴바 -->
+      <div class="toolbar hidden" id="toolbar">
+        <span class="tt">관리 도구</span>
+        <span class="ssot-note">화물 데이터는 구글시트에서 관리됩니다 (실시간 동기화)</span>
+        <button class="tbtn ghost" onclick="openCodeModal()">접속 코드 관리</button>
+        <button class="tbtn dl" onclick="downloadHTML()">⬇ 코드 변경 저장 (HTML)</button>
+        <span class="dirty hidden" id="dirtyFlag">● 저장되지 않은 코드 변경 — HTML 저장하세요</span>
+      </div>
+
+      <div class="cofilter" id="cofilter"></div>
+      <div class="cards" id="cards"></div>
+    </div>
+
+    <div id="pg1" class="hidden">
+      <div class="soonbox">
+        <div class="tag">COMING SOON</div>
+        <h2>해상 항차 스케줄</h2>
+        <p>부산 → LA 콘솔 항차의 선박명 · ETD/ETA · 서류 마감(면장/픽업 컷오프)을
+        확정 즉시 자동 반영합니다. 오픈되면 별도 안내 없이 이 탭에서 바로 확인 가능합니다.</p>
+      </div>
+    </div>
+
+    <div id="pg2" class="hidden">
+      <div class="soonbox">
+        <div class="tag">COMING SOON</div>
+        <h2>셀프 견적 확인</h2>
+        <p>박스 수량 · 중량 · 사이즈만 입력하면 항공 특송 / 해상 LCL 예상 견적과
+        리드타임을 즉시 확인할 수 있는 계산기를 준비 중입니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    본 페이지는 업무 진행 공유용이며 실시간 시스템 조회가 아닙니다. 표기된 일정은 선사/항공사 사정에 따라 변동될 수 있습니다.
+    · ENOMAD 이노마드
+  </footer>
+</div>
+
+<!-- ═══════════ 건 등록/수정 모달 ═══════════ -->
+<div class="overlay hidden" id="shipModal">
+  <div class="modal">
+    <h2 id="shipModalTitle">새 건 추가</h2>
+    <div class="fgrid">
+      <div class="fld"><label>업체명 *</label><input id="f_company" placeholder="예: 큐링"></div>
+      <div class="fld"><label>운송 모드 *</label>
+        <select id="f_mode" onchange="modeFields()">
+          <option value="sea">해상 LCL</option>
+          <option value="air">항공</option>
+        </select>
+      </div>
+      <div class="fld"><label>진행 상태 *</label>
+        <select id="f_status">
+          <option>접수</option><option>부킹완료</option><option>픽업완료</option>
+          <option>출항완료</option><option>입고완료</option><option value="청구완료">완료</option>
+        </select>
+      </div>
+      <div class="fld"><label>No. (월-순번)</label><input id="f_no" class="mono" placeholder="예: 7-1"></div>
+
+      <div class="seafields" id="seaFields">
+        <div class="fld"><label>BK# (부킹번호)</label><input id="f_bk" class="mono" placeholder="ULAX26...."></div>
+        <div class="fld"><label>선박 / 항차</label><input id="f_vessel" placeholder="HMM DIAMOND · ETD 7/15 ETA 7/30"></div>
+      </div>
+      <div class="airfields hidden" id="airFields">
+        <div class="fld"><label>항공 구분</label>
+          <select id="f_type"><option>항공 특송</option><option>에어카고</option></select>
+        </div>
+        <div class="fld"></div>
+      </div>
+
+      <div class="fld"><label>품목</label><input id="f_product" placeholder="예: 화장품"></div>
+      <div class="fld"><label>물량</label><input id="f_qty" placeholder="예: 3PLT(27ct), 502kg, 4.58CBM"></div>
+
+      <div class="fld"><label>접수일</label><input id="f_order_date" type="date"></div>
+      <div class="fld"><label>수출면장</label><input id="f_export_permit" class="mono" placeholder="날짜 또는 O / -"></div>
+      <div class="fld"><label>픽업</label><input id="f_pickup" class="mono" placeholder="날짜 또는 메모"></div>
+      <div class="fld"><label id="depLbl">부산 출항 (ETD)</label><input id="f_depart" class="mono" placeholder="YYYY-MM-DD"></div>
+      <div class="fld"><label>현지 입고</label><input id="f_flow_inbound" class="mono" placeholder="YYYY-MM-DD"></div>
+      <div class="fld"><div class="hint" style="margin-top:20px">날짜 필드에 값이 있으면 파이프라인에 완료 표시됩니다.<br>미완료 단계는 비워 두세요.</div></div>
+    </div>
+    <div class="mact">
+      <button class="cancel" onclick="closeModal('shipModal')">취소</button>
+      <button class="save" onclick="saveShip()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ 접속 코드 관리 모달 ═══════════ -->
+<div class="overlay hidden" id="codeModal">
+  <div class="modal">
+    <h2>접속 코드 관리</h2>
+    <div class="codelist" id="codeList"></div>
+    <div class="codeadd">
+      <div class="fld"><label>새 코드</label><input id="c_code" class="mono" placeholder="예: NEWCO-2607" style="text-transform:uppercase"></div>
+      <div class="fld"><label>업체명</label><input id="c_name" placeholder="예: 뉴컴퍼니"></div>
+      <div class="fld" style="flex:0 0 auto;min-width:auto"><label>권한</label>
+        <select id="c_role"><option value="customer">업체 (본인 건만)</option><option value="viewAll">애드캐리 (전체 조회)</option><option value="admin">이노마드 (전체 + 편집)</option></select>
+      </div>
+      <button class="tbtn" style="height:36px" onclick="addCode()">추가</button>
+    </div>
+    <div class="mact">
+      <button class="cancel" onclick="closeModal('codeModal')">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     ★ PORTAL STATE — 접속 코드 + 화물 데이터.
+     화면의 [관리 도구]로 수정한 뒤 [HTML 다운로드]하면
+     이 블록이 갱신된 새 파일이 저장됩니다. 그 파일을 GitHub Pages에
+     덮어쓰기 업로드하면 배포 완료.
+     ================================================================ -->
+<script type="application/json" id="portal-state">{
+ "access": {
+  "ENOMAD-HQ26": {
+   "role": "admin",
+   "name": "이노마드",
+   "label": "ADMIN"
+  },
+  "ADCARRY-2026": {
+   "role": "viewAll",
+   "name": "애드캐리",
+   "label": "PARTNER"
+  },
+  "QRING-2606": {
+   "company": "큐링",
+   "name": "큐링"
+  },
+  "GREEN-2603": {
+   "company": "그린토크",
+   "name": "그린토크"
+  },
+  "JDC-2604": {
+   "company": "제이디씨",
+   "name": "제이디씨"
+  },
+  "FUN-2604": {
+   "company": "펀샤인",
+   "name": "펀샤인"
+  },
+  "LEVI-2604": {
+   "company": "레비시아",
+   "name": "레비시아"
+  },
+  "BELONG-2605": {
+   "company": "빌롱스카프",
+   "name": "빌롱스카프"
+  },
+  "MENTO-2606": {
+   "company": "멘토클리닉",
+   "name": "멘토클리닉"
+  },
+  "SATER-2602": {
+   "company": "새터",
+   "name": "새터"
+  }
+ },
+ "data": {
+  "rows": [],
+  "exported": "2026-07-07",
+  "_fallback": "Firestore 실시간 데이터로 대체됨"
+ },
+ "showCompleted": true,
+ "invoices": [
+  {
+   "company": "새터",
+   "method": "pct_bill",
+   "month": 2,
+   "no": "ADC-2602-01",
+   "amount": 4217768,
+   "rate": 15,
+   "profit": 0,
+   "fixed": 0,
+   "status": "정산완료",
+   "memo": "애드캐리 쉐어 15%"
+  },
+  {
+   "company": "멘토클리닉",
+   "method": "pct_profit",
+   "month": 6,
+   "no": "ADC-2606-03",
+   "amount": 1432733,
+   "rate": 30,
+   "profit": 506543,
+   "fixed": 0,
+   "status": "미정산",
+   "memo": "수익 기준 30%"
+  },
+  {
+   "company": "그린토크",
+   "method": "fixed",
+   "month": 3,
+   "no": "ADC-2603-01",
+   "amount": 3536551,
+   "rate": 0,
+   "profit": 0,
+   "fixed": 300000,
+   "status": "미정산",
+   "memo": "건별 고정 쉐어"
+  }
+ ]
+}</script>
+
+<script>
+/* ── 상태 로드 ──
+   access(접속 코드) · invoices 는 이 파일에 내장 유지.
+   data.rows 는 Firestore 실시간 구독으로 교체됩니다(하단 module 스크립트). */
+const stateEl = document.getElementById('portal-state');
+const STATE = JSON.parse(stateEl.textContent);
+const ACCESS = STATE.access;
+const DATA = STATE.data;            // rows 는 Firestore 스냅샷으로 갈아끼워짐
+if(!DATA.rows) DATA.rows = [];
+if(!STATE.invoices) STATE.invoices = [];
+const INVOICES = STATE.invoices;
+let SHOW_COMPLETED = STATE.showCompleted !== false;
+let fbReady = false;                // Firestore 최초 스냅샷 수신 여부
+
+const SEA_STEPS = [
+  {key:'order_date',lbl:'접수'},{key:'export_permit',lbl:'수출면장'},{key:'pickup',lbl:'픽업'},
+  {key:'etd_busan',lbl:'부산 출항'},{key:'flow_inbound',lbl:'현지 입고'}];
+const AIR_STEPS = [
+  {key:'order_date',lbl:'접수'},{key:'export_permit',lbl:'수출면장'},{key:'pickup',lbl:'픽업'},
+  {key:'departure',lbl:'출항'},{key:'flow_inbound',lbl:'현지 입고'}];
+
+const stepDone = v => !!(v && String(v).trim() && String(v).trim() !== '-');
+const statLabel = s => ({'접수':'접수 완료','부킹완료':'부킹 완료','픽업완료':'픽업 완료 · 출항 대기','출항완료':'출항 · 운송 중','입고완료':'현지 창고 입고','청구완료':'운송 완료'})[s] || s;
+const isDone = r => r.status === '청구완료';
+const esc = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+let session = null, sessionCode = null, dirty = false;
+/* 권한: admin=이노마드(편집), viewAll=애드캐리(전체 조회), 그 외=업체 본인 건 */
+const canEdit = () => session && session.role === 'admin';
+const seesAll = () => session && (session.role === 'admin' || session.role === 'viewAll');
+
+/* ── 로그인 ── */
+function login(){
+  const raw = document.getElementById('code').value.trim().toUpperCase();
+  const acc = ACCESS[raw];
+  if(!acc){ document.getElementById('gateErr').textContent = '유효하지 않은 코드입니다. 담당자에게 확인해 주세요.'; return; }
+  session = acc; sessionCode = raw;
+  sessionStorage.setItem('enomad_track_code', raw);
+  enter();
+}
+function logout(){ sessionStorage.removeItem('enomad_track_code'); location.reload(); }
+function enter(){
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('whoName').textContent = session.name;
+  document.getElementById('whoRole').textContent = session.label || 'CUSTOMER';
+  document.getElementById('toolbar').classList.toggle('hidden', !canEdit());
+  render();
+}
+function nav(i){
+  [0,1,2].forEach(n=>{
+    document.getElementById('pg'+n).classList.toggle('hidden', n!==i);
+    document.getElementById('nv'+n).classList.toggle('on', n===i);
+  });
+}
+
+/* ── 필터 ── */
+let coFilter='all', stFilter='all';
+function setCo(c,btn){ coFilter=c; togChips(btn,'co'); renderCards(); }
+function setSt(s,btn){ stFilter=s; togChips(btn,'st'); renderCards(); }
+function togChips(btn,g){
+  btn.parentElement.querySelectorAll('.chip[data-g="'+g+'"]').forEach(x=>x.classList.remove('on'));
+  btn.classList.add('on');
+}
+function baseRows(){
+  /* 애드캐리(viewAll)·이노마드(admin): 전체 건. 그 외: 본인 건만 (완료 이력 포함) */
+  if(!seesAll()) return DATA.rows.filter(r=>r.company === session.company);
+  return SHOW_COMPLETED ? DATA.rows.slice() : DATA.rows.filter(r=>!isDone(r));
+}
+function visibleRows(){
+  let rows = baseRows();
+  if(seesAll() && coFilter!=='all') rows = rows.filter(r=>r.company===coFilter);
+  if(stFilter==='prog') rows = rows.filter(r=>!isDone(r));
+  if(stFilter==='done') rows = rows.filter(r=>isDone(r));
+  rows.sort((a,b)=>(isDone(a)-isDone(b))||((a.month||0)-(b.month||0)));
+  return rows;
+}
+
+/* ── 렌더 ── */
+function render(){
+  const all = baseRows();
+  const prog = all.filter(r=>!isDone(r)).length, done = all.length - prog;
+  document.getElementById('introMsg').innerHTML = seesAll()
+    ? '<strong>'+esc(session.name)+'</strong> — 애드캐리 채널 연결 고객 전체 건입니다. 진행 중 '+prog+'건 · 완료 '+done+'건. 기준일 '+esc(DATA.exported||'')+'.'
+    : '<strong>'+esc(session.name)+'</strong> 님의 화물 현황입니다 — 진행 중 '+prog+'건 · 완료된 과거 이력 '+done+'건. 기준일 '+esc(DATA.exported||'')+'.';
+
+  let chips = '<span class="cl">상태:</span>'
+    +'<button class="chip'+(stFilter==='all'?' on':'')+'" data-g="st" onclick="setSt(\'all\',this)">전체 ('+all.length+')</button>'
+    +'<button class="chip'+(stFilter==='prog'?' on':'')+'" data-g="st" onclick="setSt(\'prog\',this)">진행중 ('+prog+')</button>'
+    +'<button class="chip'+(stFilter==='done'?' on':'')+'" data-g="st" onclick="setSt(\'done\',this)">완료 ('+done+')</button>';
+  if(seesAll()){
+    const cos=[...new Set(all.map(r=>r.company))].sort();
+    chips += '<span class="cl" style="margin-left:12px">업체:</span>'
+      +'<button class="chip'+(coFilter==='all'?' on':'')+'" data-g="co" onclick="setCo(\'all\',this)">전체</button>'
+      +cos.map(c=>'<button class="chip'+(coFilter===c?' on':'')+'" data-g="co" onclick="setCo(\''+esc(c)+'\',this)">'+esc(c)+'</button>').join('');
+  }
+  document.getElementById('cofilter').innerHTML = chips;
+  renderCards();
+}
+
+function renderCards(){
+  const rows = visibleRows();
+  const box = document.getElementById('cards');
+  const isAdmin = canEdit();
+  if(!rows.length){
+    if(!fbReady){
+      box.innerHTML = '<div class="empty"><div class="big">실시간 데이터 불러오는 중…</div>'
+        +'구글시트와 동기화된 최신 현황을 가져오고 있습니다.</div>';
+    } else {
+      box.innerHTML = '<div class="empty"><div class="big">표시할 화물이 없습니다</div>'
+        +'새 건이 접수되면 이 화면에 자동으로 표시됩니다.<br>신규 발송 문의: sel@enomad.co.kr</div>';
+    }
+    return;
+  }
+  let firstDoneMarked = false;
+  box.innerHTML = rows.map(r=>{
+    const isAir = r.mode==='air';
+    const steps = isAir?AIR_STEPS:SEA_STEPS;
+    const done = isDone(r);
+    let divider = '';
+    if(done && !firstDoneMarked && stFilter==='all'){
+      firstDoneMarked = true;
+      divider = '<div class="secdiv">완료된 이력</div>';
+    }
+    let lastDone=-1;
+    steps.forEach((s,i)=>{ if(stepDone(r[s.key])) lastDone=i; });
+    if(done) lastDone = steps.length-1;
+    const track = steps.map((s,i)=>{
+      const cls = i<=lastDone?'done':(!done&&i===lastDone+1?'now':'');
+      const dt = stepDone(r[s.key]) && /\d/.test(r[s.key]) ? String(r[s.key]).replace(/^2026-/,'').replace('-','/') : '';
+      return '<div class="tstep '+cls+'"><div class="bar"></div><div class="dot"></div>'
+        +'<div class="tl">'+s.lbl+'</div><div class="td">'+esc(dt)+'</div></div>';
+    }).join('');
+    const ref = isAir ? (r.no?'No. '+esc(r.no):'') : esc(r.bk||r.no||'');
+    const vessel = !isAir && r.vessel ? esc(String(r.vessel).split('\n').filter(x=>x.trim()&&!/^\d+-\d+/.test(x.trim())).join(' · ')) : '';
+    const meta = [
+      ['운송 구분', isAir?esc((r.type||'항공')).replace('\n',' '):'해상 LCL (부산 → LA)'],
+      ['품목', esc(r.product)||'—'],
+      ['물량', esc(r.qty)||'—'],
+      vessel?['선박 / 일정',vessel]:null,
+      ['접수일', esc(r.order_date)||'—'],
+    ].filter(Boolean).map(m=>'<div><div class="mk">'+m[0]+'</div><div class="mv">'+m[1]+'</div></div>').join('');
+    const stCls = done?' fin':((r.status==='출항완료'||r.status==='입고완료')?' mid':'');
+    const ebtns = '';   // Firebase 모드: 화물 데이터는 시트에서만 수정 (읽기 전용)
+    return divider + '<div class="ship'+(isAir?' air':'')+(done?' donecard':'')+'">'
+      +'<div class="top">'
+      +'<span class="badge '+(isAir?'b-air':'b-sea')+'">'+(isAir?'AIR':'SEA')+'</span>'
+      +'<span class="co">'+esc(r.company)+'</span>'
+      +(ref?'<span class="ref">'+ref+'</span>':'')
+      +'<span class="badge b-stat'+stCls+'">'+statLabel(r.status)+'</span>'
+      + ebtns
+      +'</div>'
+      +'<div class="body"><div class="meta">'+meta+'</div><div class="track">'+track+'</div></div>'
+      +'</div>';
+  }).join('');
+}
+
+/* ══════════ 편집 기능 (관리자) ══════════ */
+let editIdx = null;
+
+function markDirty(){
+  dirty = true;
+  document.getElementById('dirtyFlag').classList.remove('hidden');
+}
+window.addEventListener('beforeunload', e=>{ if(dirty){ e.preventDefault(); e.returnValue=''; } });
+
+function modeFields(){
+  const isAir = document.getElementById('f_mode').value==='air';
+  document.getElementById('seaFields').classList.toggle('hidden', isAir);
+  document.getElementById('airFields').classList.toggle('hidden', !isAir);
+  document.getElementById('depLbl').textContent = isAir ? '출항 (ETD)' : '부산 출항 (ETD)';
+}
+
+function openShipModal(idx){
+  editIdx = (typeof idx==='number') ? idx : null;
+  const r = editIdx!==null ? DATA.rows[editIdx] : null;
+  document.getElementById('shipModalTitle').textContent = r ? '건 수정 — '+r.company : '새 건 추가';
+  document.getElementById('f_company').value = r?.company||'';
+  document.getElementById('f_mode').value = r?.mode||'sea';
+  document.getElementById('f_status').value = r?.status||'접수';
+  document.getElementById('f_no').value = r?.no||'';
+  document.getElementById('f_bk').value = r?.bk||'';
+  document.getElementById('f_vessel').value = r?.vessel ? String(r.vessel).split('\n').filter(x=>x.trim()&&!/^\d+-\d+/.test(x.trim())).join(' · ') : '';
+  document.getElementById('f_type').value = (r?.type||'항공 특송').includes('에어카고')?'에어카고':'항공 특송';
+  document.getElementById('f_product').value = r?.product||'';
+  document.getElementById('f_qty').value = r?.qty||'';
+  document.getElementById('f_order_date').value = /^\d{4}-\d{2}-\d{2}$/.test(r?.order_date||'') ? r.order_date : '';
+  document.getElementById('f_export_permit').value = r?.export_permit||'';
+  document.getElementById('f_pickup').value = r?.pickup||'';
+  document.getElementById('f_depart').value = r ? (r.mode==='air'?(r.departure||''):(r.etd_busan||'')) : '';
+  document.getElementById('f_flow_inbound').value = r?.flow_inbound||'';
+  modeFields();
+  document.getElementById('shipModal').classList.remove('hidden');
+}
+function closeModal(id){ document.getElementById(id).classList.add('hidden'); }
+
+function saveShip(){
+  const company = document.getElementById('f_company').value.trim();
+  if(!company){ alert('업체명을 입력하세요.'); return; }
+  const mode = document.getElementById('f_mode').value;
+  const no = document.getElementById('f_no').value.trim();
+  const order = document.getElementById('f_order_date').value;
+  let month = null;
+  const mNo = no.match(/^(\d+)-/); const mOd = order.match(/^\d{4}-(\d{2})/);
+  if(mNo) month = parseInt(mNo[1]); else if(mOd) month = parseInt(mOd[1]);
+
+  const rec = {
+    no, mode, company, month,
+    status: document.getElementById('f_status').value,
+    order_date: order,
+    product: document.getElementById('f_product').value.trim(),
+    qty: document.getElementById('f_qty').value.trim(),
+    export_permit: document.getElementById('f_export_permit').value.trim(),
+    pickup: document.getElementById('f_pickup').value.trim(),
+    flow_inbound: document.getElementById('f_flow_inbound').value.trim(),
+    shipper: company + ' (애드캐리)',
+  };
+  const dep = document.getElementById('f_depart').value.trim();
+  if(mode==='sea'){
+    rec.bk = document.getElementById('f_bk').value.trim();
+    rec.vessel = document.getElementById('f_vessel').value.trim();
+    rec.etd_busan = dep;
+  } else {
+    rec.type = document.getElementById('f_type').value;
+    rec.departure = dep;
+  }
+  if(editIdx!==null) DATA.rows[editIdx] = Object.assign({}, DATA.rows[editIdx], rec);
+  else DATA.rows.push(rec);
+  markDirty(); closeModal('shipModal'); render();
+}
+
+function delShip(idx){
+  const r = DATA.rows[idx];
+  if(!confirm('['+r.company+'] '+(r.bk||r.no||'')+' 건을 삭제할까요?')) return;
+  DATA.rows.splice(idx,1);
+  markDirty(); render();
+}
+
+/* ── 접속 코드 관리 ── */
+function openCodeModal(){
+  renderCodes();
+  document.getElementById('codeModal').classList.remove('hidden');
+}
+function renderCodes(){
+  const roleLabel = a => a.role==='admin' ? (a.label||'이노마드') : (a.role==='viewAll' ? '애드캐리' : '업체');
+  document.getElementById('codeList').innerHTML = Object.entries(ACCESS).map(([code,a])=>
+    '<div class="coderow"><span class="cc">'+esc(code)+'</span><span class="cn2">'+esc(a.name)+'</span>'
+    +'<span class="cr">'+roleLabel(a)+'</span>'
+    +(code===sessionCode?'<span style="font-size:10.5px;color:var(--ink-3)">현재 접속</span>'
+      :'<button class="cx" title="삭제" onclick="delCode(\''+esc(code)+'\')">✕</button>')
+    +'</div>').join('');
+}
+function addCode(){
+  const code = document.getElementById('c_code').value.trim().toUpperCase();
+  const name = document.getElementById('c_name').value.trim();
+  const role = document.getElementById('c_role').value;
+  if(!code||!name){ alert('코드와 업체명을 모두 입력하세요.'); return; }
+  if(ACCESS[code]){ alert('이미 존재하는 코드입니다.'); return; }
+  ACCESS[code] = role==='admin' ? {role:'admin',name,label:'이노마드'}
+              : role==='viewAll' ? {role:'viewAll',name,label:'PARTNER'}
+              : {company:name,name};
+  document.getElementById('c_code').value=''; document.getElementById('c_name').value='';
+  markDirty(); renderCodes();
+}
+function delCode(code){
+  if(!confirm('코드 '+code+' ('+ACCESS[code].name+')를 삭제할까요? 해당 코드로는 더 이상 접속할 수 없습니다.')) return;
+  delete ACCESS[code];
+  markDirty(); renderCodes();
+}
+
+/* ══════════ HTML 다운로드 (자가 저장) ══════════ */
+function downloadHTML(){
+  /* 1. 상태 JSON 갱신 — 화물 rows 는 Firestore 실시간 소스이므로 저장 파일엔 비워둠.
+        access(접속 코드)만 갱신 저장. */
+  const saveData = Object.assign({}, DATA, {rows:[], _fallback:'Firestore 실시간 데이터로 대체됨'});
+  const json = JSON.stringify({access:ACCESS, data:saveData, invoices:INVOICES, showCompleted:SHOW_COMPLETED}, null, 1);
+  /* 2. 문서 복제 후 초기 화면 상태로 리셋 */
+  const clone = document.documentElement.cloneNode(true);
+  const st = clone.querySelector('#portal-state');
+  st.textContent = json.replace(/<\/script/gi,'<\\/script');
+  clone.querySelector('#gate').style.display = '';
+  clone.querySelector('#app').style.display = 'none';
+  clone.querySelector('#code').setAttribute('value','');
+  clone.querySelector('#cards').innerHTML = '';
+  clone.querySelector('#cofilter').innerHTML = '';
+  clone.querySelector('#introMsg').innerHTML = '';
+  clone.querySelector('#codeList').innerHTML = '';
+  clone.querySelectorAll('.nav>button').forEach(b=>b.classList.toggle('on', b.id==='nv0'));
+  clone.querySelector('#pg0').classList.remove('hidden');
+  ['pg1','pg2'].forEach(id=>clone.querySelector('#'+id).classList.add('hidden'));
+  clone.querySelector('#dirtyFlag').classList.add('hidden');
+  clone.querySelector('#toolbar').classList.add('hidden');
+  clone.querySelectorAll('.overlay').forEach(o=>o.classList.add('hidden'));
+  /* 3. 파일로 저장 */
+  const html = '<!DOCTYPE html>\n' + clone.outerHTML;
+  const d = new Date();
+  const fname = 'enomad-adcarry-portal_' + d.toISOString().slice(0,10).replace(/-/g,'') + '.html';
+  const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = fname;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  dirty = false;
+  document.getElementById('dirtyFlag').classList.add('hidden');
+  DATA.exported = d.toISOString().slice(0,10);
+}
+
+/* ══════════ Firestore 실시간 브리지 ══════════
+   하단 module 스크립트가 Firestore 스냅샷을 받아 이 함수들을 호출합니다. */
+function setLive(on){
+  const el = document.getElementById('liveStatus');
+  const txt = document.getElementById('liveText');
+  if(!el) return;
+  el.classList.toggle('on', on);
+  el.classList.toggle('off', !on);
+  txt.textContent = on ? '실시간 연결됨' : '연결 끊김 · 재시도 중';
+}
+/* Firestore shipments 스냅샷 → DATA.rows 갱신 후 현재 화면 리렌더 */
+window.__onShipments = function(rows){
+  DATA.rows = rows;
+  fbReady = true;
+  setLive(true);
+  if(session){ render(); }   // 로그인 상태면 즉시 반영
+};
+window.__onFbError = function(){ setLive(false); };
+window.__onMeta = function(meta){
+  if(meta && meta.syncedAt){ DATA.exported = String(meta.syncedAt).slice(0,10); if(session) render(); }
+};
+
+/* ── 세션 유지 (탭 닫으면 만료) ── */
+const saved = sessionStorage.getItem('enomad_track_code');
+if(saved && ACCESS[saved]){ session=ACCESS[saved]; sessionCode=saved; enter(); }
+</script>
+
+<!-- ★ Firebase 실시간 데이터 소스 (modular SDK) ─────────────────────
+     firebaseConfig 만 채우면 shipments 컬렉션을 실시간 구독합니다.
+     access 코드는 위 내장 JSON을 그대로 사용(인증은 코드 방식 유지). -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, doc, onSnapshot }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ★ EDITABLE — Firebase 콘솔 값으로 교체 (01_firebase_config.js 참고) */
+const firebaseConfig = {
+  apiKey: "AIzaSyB-wtJewqTS08iI8x4mOQ19JUh4sSMX6qE",
+  authDomain: "enomad-adcarry.firebaseapp.com",
+  projectId: "enomad-adcarry",
+  storageBucket: "enomad-adcarry.firebasestorage.app",
+  messagingSenderId: "755125198902",
+  appId: "1:755125198902:web:0e695d4c1bf00987b9f897"
+};
+
+try {
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  await signInAnonymously(auth);   // 규칙: request.auth != null 통과용
+
+  /* shipments 실시간 구독 */
+  onSnapshot(collection(db, "shipments"),
+    (snap) => {
+      const rows = [];
+      snap.forEach(d => { const r = d.data(); delete r.updatedAt; delete r._sheetRow; rows.push(r); });
+      window.__onShipments(rows);
+    },
+    (err) => { console.error("shipments 구독 오류:", err); window.__onFbError(); }
+  );
+
+  /* 동기화 메타(마지막 동기화 시각) 구독 */
+  onSnapshot(doc(db, "_meta", "sync"),
+    (d) => { if(d.exists()) window.__onMeta(d.data()); },
+    () => {}
+  );
+} catch (e) {
+  console.error("Firebase 초기화 실패:", e);
+  window.__onFbError();
+}
+</script>
+</body>
+</html>
