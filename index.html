@@ -454,7 +454,7 @@ const AIR_STEPS = [
 
 const stepDone = v => !!(v && String(v).trim() && String(v).trim() !== '-');
 const statLabel = s => ({'접수':'접수 완료','부킹완료':'부킹 완료','픽업완료':'픽업 완료 · 출항 대기','출항완료':'출항 · 운송 중','입고완료':'현지 창고 입고','청구완료':'운송 완료'})[s] || s;
-const isDone = r => r.status === '청구완료';
+const isDone = r => r.status === '청구완료' || stepDone(r.flow_inbound);
 const esc = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
 let session = null, sessionCode = null, dirty = false;
@@ -580,7 +580,7 @@ function renderCards(){
       +'<span class="badge '+(isAir?'b-air':'b-sea')+'">'+(isAir?'AIR':'SEA')+'</span>'
       +'<span class="co">'+esc(r.company)+'</span>'
       +(ref?'<span class="ref">'+ref+'</span>':'')
-      +'<span class="badge b-stat'+stCls+'">'+statLabel(r.status)+'</span>'
+      +'<span class="badge b-stat'+stCls+'">'+(done?statLabel('청구완료'):statLabel(r.status))+'</span>'
       + ebtns
       +'</div>'
       +'<div class="body"><div class="meta">'+meta+'</div><div class="track">'+track+'</div></div>'
