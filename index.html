@@ -1014,7 +1014,8 @@ function setVoyFilter(f){ voyMonthFilter=f; renderVoyages(); }
    ★ EDITABLE — 요율표 갱신 시 이 상수 블록만 수정하세요 (기준: 2026년 6월). */
 const RATE = {
   usdKrwFallback: 1350,    // 고시환율 조회 실패 시 참고값
-  eximAuthKey: 'dhPKlKHIKqGt7k50ZIc5dD9jwfV1FJSZ',  // 공공데이터포털 한국수출입은행 환율 API
+  fxProxyUrl: 'https://enomad-exim-fx.puddle-deer.workers.dev', // Cloudflare Worker (영구 배포: fx-worker에서 wrangler deploy)
+  eximAuthKey: 'dhPKlKHIKqGt7k50ZIc5dD9jwfV1FJSZ',  // 로컬/직접 호출용 (웹은 프록시 사용)
   air: {
     perKg: 13,            // $/kg (10kg 이상 flat)
     minKg: 10,            // 최소 과금 중량
@@ -1076,22 +1077,36 @@ async function fetchEximJson(url){
     const res = await fetch(url);
     if(!res.ok) return null;
     return await res.json();
-  }catch(e){
-    try{
-      const proxy = 'https://api.allorigins.win/raw?url='+encodeURIComponent(url);
-      const res = await fetch(proxy);
-      if(!res.ok) return null;
-      return JSON.parse(await res.text());
-    }catch(e2){ return null; }
-  }
+  }catch(e){ return null; }
 }
 async function fetchEximForDate(searchdate){
+  // 1) Firebase Function 프록시 (웹 CORS 우회)
+  if(RATE.fxProxyUrl){
+    const data = await fetchEximJson(RATE.fxProxyUrl+'?date='+searchdate);
+    const rate = parseEximUsd(data);
+    if(rate) return {rate, date:searchdate};
+  }
+  // 2) 직접 호출 (로컬 등 CORS 허용 환경)
   const key = RATE.eximAuthKey;
-  if(!key) return null;
-  const url = 'https://oapi.koreaexim.go.kr/site/program/financial/exchangeJSON'
-    +'?authkey='+encodeURIComponent(key)+'&searchdate='+searchdate+'&data=AP01';
-  const rate = parseEximUsd(await fetchEximJson(url));
-  return rate ? {rate, date:searchdate} : null;
+  if(key){
+    const url = 'https://oapi.koreaexim.go.kr/site/program/financial/exchangeJSON'
+      +'?authkey='+encodeURIComponent(key)+'&searchdate='+searchdate+'&data=AP01';
+    const rate = parseEximUsd(await fetchEximJson(url));
+    if(rate) return {rate, date:searchdate};
+  }
+  return null;
+}
+function waitFxMeta(ms){
+  return new Promise(resolve=>{
+    if(window.__fxMeta?.rate) return resolve(window.__fxMeta);
+    const t = setTimeout(()=>resolve(window.__fxMeta||null), ms);
+    const prev = window.__onFxMetaReady;
+    window.__onFxMetaReady = meta=>{
+      if(prev) prev(meta);
+      clearTimeout(t);
+      resolve(meta||window.__fxMeta||null);
+    };
+  });
 }
 function applyFx(fx){
   FX = {rate:fx.rate, date:fx.date, loading:false, viewedOn:kstYmd()};
@@ -1134,12 +1149,20 @@ async function loadFxRate(force=false){
   FX.loading = true;
   updateFxStamp();
 
+  if(!window.__fxMeta?.rate && !force){
+    const meta = await waitFxMeta(2500);
+    if(meta?.rate){
+      applyFx({rate:meta.rate, date:meta.date || viewedOn});
+      return;
+    }
+  }
+
   if(window.__fxMeta?.rate){
     applyFx({rate:window.__fxMeta.rate, date:window.__fxMeta.date || viewedOn});
     return;
   }
 
-  if(RATE.eximAuthKey){
+  if(RATE.fxProxyUrl || RATE.eximAuthKey){
     // 견적 확인일 고시환율 우선, 휴일·미고시 시 직전 영업일
     for(let i=0; i<10; i++){
       const fx = await fetchEximForDate(kstYmd(i));
@@ -1289,8 +1312,18 @@ window.__onMeta = function(meta){
       rate: Number(tts),
       date: String(meta.fxDate || meta.fx_date || '').replace(/-/g,'') || kstYmd()
     };
+    if(window.__onFxMetaReady) window.__onFxMetaReady(window.__fxMeta);
     if(session) loadFxRate(true);
   }
+};
+window.__onFx = function(data){
+  if(!data?.usdTts && !data?.usd_tts) return;
+  window.__fxMeta = {
+    rate: Number(data.usdTts ?? data.usd_tts),
+    date: String(data.fxDate || data.fx_date || '').replace(/-/g,'') || kstYmd()
+  };
+  if(window.__onFxMetaReady) window.__onFxMetaReady(window.__fxMeta);
+  if(session) loadFxRate(true);
 };
 /* Firestore voyages 스냅샷 → 항차 스케줄 갱신 */
 window.__onVoyages = function(rows){
@@ -1354,6 +1387,12 @@ try {
   /* 동기화 메타(마지막 동기화 시각) 구독 */
   onSnapshot(doc(db, "_meta", "sync"),
     (d) => { if(d.exists()) window.__onMeta(d.data()); },
+    () => {}
+  );
+
+  /* 환율 메타(선택) — 시트 동기화 시 usdTts 저장하면 프록시 없이도 동작 */
+  onSnapshot(doc(db, "_meta", "fx"),
+    (d) => { if(d.exists()) window.__onFx(d.data()); },
     () => {}
   );
 } catch (e) {
