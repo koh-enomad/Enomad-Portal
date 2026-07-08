@@ -206,6 +206,15 @@ header .brand em{font-style:normal;color:#8ED4E0}
 .q-opts label{font-size:13px;color:var(--ink-2);display:flex;align-items:center;gap:7px;cursor:pointer}
 .q-opts input{accent-color:var(--teal)}
 .q-note{font-size:11px;color:var(--ink-3);margin-top:12px;line-height:1.6}
+.pallet-row{margin-bottom:12px;padding-bottom:12px;border-bottom:1px dashed var(--line)}
+.pallet-row:last-of-type{border-bottom:none;margin-bottom:8px;padding-bottom:0}
+.pallet-row-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.pallet-row-hd span{font-size:11px;font-weight:600;color:var(--ink-3)}
+.pallet-rm{appearance:none;border:none;background:none;color:var(--ink-3);font-size:11px;cursor:pointer;padding:0}
+.pallet-rm:hover{color:var(--warn)}
+.pallet-add{appearance:none;border:1px dashed var(--teal);background:var(--teal-mist);color:var(--teal-deep);
+  border-radius:6px;padding:8px 12px;font-size:12px;font-weight:600;cursor:pointer;width:100%}
+.pallet-add:hover{background:var(--teal-soft)}
 
 .q-result{padding:20px 22px;min-height:200px}
 .q-result .qr-empty{color:var(--ink-3);font-size:13px;text-align:center;padding:40px 10px}
@@ -360,12 +369,9 @@ footer{max-width:1100px;margin:0 auto;padding:0 24px 40px;font-size:11.5px;color
               <div class="fld"><label>총 CBM (m³)</label><input id="s_cbm" type="number" step="0.01" placeholder="예: 2.35" oninput="calcSea()"></div>
             </div>
             <div id="qSeaPallet" class="q-fields hidden">
-              <div class="q-row">
-                <div class="fld"><label>가로 (cm)</label><input id="p_l" type="number" placeholder="110" oninput="calcSea()"></div>
-                <div class="fld"><label>세로 (cm)</label><input id="p_w" type="number" placeholder="110" oninput="calcSea()"></div>
-                <div class="fld"><label>높이 (cm)</label><input id="p_h" type="number" placeholder="120" oninput="calcSea()"></div>
-                <div class="fld"><label>팔렛 수</label><input id="p_qty" type="number" value="1" min="1" oninput="calcSea()"></div>
-              </div>
+              <div id="palletRows"></div>
+              <button type="button" class="pallet-add" onclick="addPalletRow()">+ 다른 사이즈 팔렛 추가</button>
+              <div class="q-note">※ 동일 사이즈는 팔렛 수로 입력하세요. 사이즈가 다르면 추가 버튼으로 입력합니다.</div>
             </div>
             <div id="qSeaBox" class="q-fields hidden">
               <div class="q-row">
@@ -374,7 +380,7 @@ footer{max-width:1100px;margin:0 auto;padding:0 24px 40px;font-size:11.5px;color
                 <div class="fld"><label>박스 높이 (cm)</label><input id="b_h" type="number" placeholder="30" oninput="calcSea()"></div>
                 <div class="fld"><label>박스 수량</label><input id="b_qty" type="number" placeholder="20" oninput="calcSea()"></div>
               </div>
-              <div class="q-note">※ 팔렛 사이즈를 모를 경우, 110×110cm 팔렛에 적재하는 기준으로 CBM을 추정합니다.</div>
+              <div class="q-note">※ 110×110cm 팔렛 기준, 적재 높이 160cm까지 1팔렛으로 계산합니다. 초과 시 팔렛을 나눠 CBM을 산정합니다.</div>
             </div>
           </div>
 
@@ -1016,8 +1022,9 @@ const RATE = {
   usdKrwFallback: 1350,    // 고시환율 조회 실패 시 참고값
   fxProxyUrl: 'https://enomad-exim-fx.puddle-deer.workers.dev', // Cloudflare Worker (영구 배포: fx-worker에서 wrangler deploy)
   eximAuthKey: 'dhPKlKHIKqGt7k50ZIc5dD9jwfV1FJSZ',  // 로컬/직접 호출용 (웹은 프록시 사용)
+  adcarryMarkup: 1.1,      // 애드캐리 진행 업체 견적 (+10%)
   air: {
-    perKg: 13,            // $/kg (10kg 이상 flat)
+    perKg: 13,            // $/kg 기준 (10kg 이상 flat) → 애드캐리 $14.3
     minKg: 10,            // 최소 과금 중량
     volDivisor: 5000,     // 부피중량 = L*W*H/5000
     permitKrw: 33000,     // 면장 발급 대행 (원)
@@ -1029,7 +1036,7 @@ const RATE = {
             6:1820.50, 7:2047.64, 8:2267.95, 9:2491.10, 10:2676.92},
     maxCbm: 10,
     permitMinKrw: 33000,  // 면장 대행 최소 (At Cost, 최소 33,000원)
-    palletBase: { w: 110, d: 110, thickness: 12 },  // 팔렛 미상 시 적재 기준 (cm)
+    palletBase: { w: 110, d: 110, thickness: 12, maxStackH: 160 },  // 110×110 팔렛, 적재 높이 160cm 초과 시 분할
   }
 };
 
@@ -1047,12 +1054,72 @@ function qSeaTypeChange(){
   document.getElementById('qSeaCbm').classList.toggle('hidden', t!=='cbm');
   document.getElementById('qSeaPallet').classList.toggle('hidden', t!=='pallet');
   document.getElementById('qSeaBox').classList.toggle('hidden', t!=='box');
+  if(t==='pallet') initPalletRows();
   calcSea();
+}
+
+let palletRowSeq = 0;
+function palletRowHtml(){
+  const i = palletRowSeq++;
+  return '<div class="pallet-row" data-id="'+i+'">'
+    +'<div class="pallet-row-hd"><span>팔렛</span>'
+    +'<button type="button" class="pallet-rm hidden" onclick="removePalletRow(this)">삭제</button></div>'
+    +'<div class="q-row">'
+    +'<div class="fld"><label>가로 (cm)</label><input class="p-l" type="number" placeholder="110" oninput="calcSea()"></div>'
+    +'<div class="fld"><label>세로 (cm)</label><input class="p-w" type="number" placeholder="110" oninput="calcSea()"></div>'
+    +'<div class="fld"><label>높이 (cm)</label><input class="p-h" type="number" placeholder="120" oninput="calcSea()"></div>'
+    +'<div class="fld"><label>팔렛 수</label><input class="p-q" type="number" value="1" min="1" oninput="calcSea()"></div>'
+    +'</div></div>';
+}
+function initPalletRows(){
+  const box = document.getElementById('palletRows');
+  if(!box.children.length) addPalletRow(true);
+}
+function addPalletRow(silent){
+  document.getElementById('palletRows').insertAdjacentHTML('beforeend', palletRowHtml());
+  syncPalletRowUi();
+  if(!silent) calcSea();
+}
+function removePalletRow(btn){
+  const rows = document.querySelectorAll('#palletRows .pallet-row');
+  if(rows.length <= 1) return;
+  btn.closest('.pallet-row').remove();
+  syncPalletRowUi();
+  calcSea();
+}
+function syncPalletRowUi(){
+  const rows = document.querySelectorAll('#palletRows .pallet-row');
+  rows.forEach((row, idx)=>{
+    row.querySelector('.pallet-row-hd span').textContent = rows.length > 1 ? '팔렛 '+(idx+1) : '팔렛';
+    row.querySelector('.pallet-rm').classList.toggle('hidden', rows.length <= 1);
+  });
+}
+function readPalletRows(){
+  const lines = [];
+  let cbm = 0;
+  document.querySelectorAll('#palletRows .pallet-row').forEach(row=>{
+    const l = parseFloat(row.querySelector('.p-l').value)||0;
+    const w = parseFloat(row.querySelector('.p-w').value)||0;
+    const h = parseFloat(row.querySelector('.p-h').value)||0;
+    const q = parseFloat(row.querySelector('.p-q').value)||1;
+    if(l && w && h){
+      const rowCbm = l*w*h/1e6*q;
+      cbm += rowCbm;
+      lines.push(q+'PLT × '+l+'×'+w+'×'+h+'cm = '+rowCbm.toFixed(3)+'m³');
+    }
+  });
+  return { cbm, calcNote: lines.join('<br>') };
 }
 
 const won = n => '₩'+Math.round(n).toLocaleString('ko-KR');
 const usd = n => '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 const numOf = id => parseFloat(document.getElementById(id).value)||0;
+
+/* 애드캐리 채널 업체·파트너 견적 (+10%), 이노마드 admin은 기준 요율 */
+const isAdcarryQuote = () => session && session.role !== 'admin';
+function qMarkup(){ return isAdcarryQuote() ? RATE.adcarryMarkup : 1; }
+function airPerKg(){ return Math.round(RATE.air.perKg * qMarkup() * 100) / 100; }
+function quoteSeaUsd(base){ return Math.round(base * qMarkup() * 100) / 100; }
 
 /* ── 환율 (견적일 기준 · USD 송금 고시환율) ── */
 let FX = { rate:null, date:null, loading:false, viewedOn:null };
@@ -1176,13 +1243,17 @@ async function loadFxRate(force=false){
 }
 
 /* ── 해상 견적 ── */
-function ceilHalf(x){
-  // 0.5 CBM 단위 올림 (3.4→3.5, 3.5→3.5, 3.6→4.0)
-  return Math.round(Math.ceil((x - 1e-9) * 2)) / 2;
+function billCbm(cbm){
+  // 0.1 미만은 올리지 않음: 1.09→1, 1.1~1.59→1.5, 1.6~→2
+  const n = Math.floor(cbm + 1e-9);
+  const frac = Math.round((cbm - n) * 100) / 100;
+  if(frac < 0.1) return n;
+  if(frac < 0.6) return n + 0.5;
+  return n + 1;
 }
 function fmtCbm(v){ return (Math.round(v * 2) / 2).toFixed(1); }
 function seaRate(cbm){
-  let billed = ceilHalf(cbm);
+  let billed = billCbm(cbm);
   if(billed < 0.5) billed = 0.5;
   if(billed > RATE.sea.maxCbm) return {billed, rate:null, over:true};
 
@@ -1202,6 +1273,23 @@ function seaRate(cbm){
   for(const k of keys){ if(k>=billed) return {billed, rate:t[k], tier:k}; }
   return {billed, rate:null, over:true};
 }
+/* 박스 → 110×110 팔렛 적재 CBM (160cm 초과 시 팔렛 분할) */
+function estimateBoxPalletCbm(l, w, h, q){
+  const base = RATE.sea.palletBase;
+  const footprint = base.w * base.d;
+  const maxStackH = base.maxStackH || 160;
+  const boxVol = l * w * h * q;
+  const stackH = boxVol / footprint;
+  const numPallets = Math.max(1, Math.ceil(stackH / maxStackH));
+  let cbm = 0, remaining = boxVol;
+  for(let i = 0; i < numPallets; i++){
+    const vol = Math.min(remaining, footprint * maxStackH);
+    const hStack = vol / footprint;
+    cbm += (footprint * (hStack + base.thickness)) / 1e6;
+    remaining -= vol;
+  }
+  return { cbm, numPallets, stackH, maxStackH };
+}
 function calcSea(){
   const box = document.getElementById('qResult');
   const type = document.querySelector('input[name="qSeaType"]:checked').value;
@@ -1210,18 +1298,20 @@ function calcSea(){
   if(type==='cbm'){
     cbm = numOf('s_cbm');
   } else if(type==='pallet'){
-    const l=numOf('p_l'), w=numOf('p_w'), h=numOf('p_h'), q=numOf('p_qty')||1;
-    cbm = (l*w*h/1e6)*q;
-    if(l&&w&&h) calcNote = q+'팔렛 × '+l+'×'+w+'×'+h+'cm = '+cbm.toFixed(3)+' CBM';
+    const pal = readPalletRows();
+    cbm = pal.cbm;
+    calcNote = pal.calcNote;
   } else { // box → 110×110 팔렛 적재 추정
     const l=numOf('b_l'), w=numOf('b_w'), h=numOf('b_h'), q=numOf('b_qty');
     if(l&&w&&h&&q){
-      const boxVol = l*w*h*q;                  // cm³
+      const est = estimateBoxPalletCbm(l, w, h, q);
+      cbm = est.cbm;
       const base = RATE.sea.palletBase;
-      const stackH = boxVol/(base.w*base.d);   // 적재 높이
-      const totalH = stackH + base.thickness;
-      cbm = (base.w*base.d*totalH)/1e6;
-      calcNote = '박스 '+q+'개(총 '+(boxVol/1e6).toFixed(3)+'m³) → '+base.w+'×'+base.d+'cm 팔렛 적재 시 약 '+cbm.toFixed(3)+' CBM';
+      const boxVol = l*w*h*q;
+      calcNote = '박스 '+q+'개(총 '+(boxVol/1e6).toFixed(3)+'m³) → '
+        +base.w+'×'+base.d+'cm 팔렛 '+est.numPallets+'PLT'
+        +(est.numPallets>1?' (적재높이 '+est.maxStackH+'cm 기준 분할)':'')
+        +' · 약 '+cbm.toFixed(3)+' CBM';
     }
   }
 
@@ -1231,21 +1321,22 @@ function calcSea(){
   if(r.over){
     box.innerHTML = '<div class="qr-chip">해상 LCL · DDP</div>'
       +'<div class="qr-line"><span class="k">입력 부피</span><span class="v">'+cbm.toFixed(3)+' CBM</span></div>'
-      +'<div class="qr-line"><span class="k">청구 CBM (0.5 CBM 단위)</span><span class="v">'+fmtCbm(r.billed)+' CBM</span></div>'
+      +'<div class="qr-line"><span class="k">청구 CBM</span><span class="v">'+fmtCbm(r.billed)+' CBM</span></div>'
       +'<div class="qr-over">10 CBM 초과는 FCL(컨테이너) 검토가 유리할 수 있습니다.<br>별도 문의: sel@enomad.co.kr</div>';
     return;
   }
 
-  const krw = r.rate*usdKrwNow();
+  const rate = quoteSeaUsd(r.rate);
+  const krw = rate*usdKrwNow();
   box.innerHTML = '<div class="qr-chip">해상 LCL · DDP (부산 → LA 창고)</div>'
     +'<div class="qr-total">예상 운임 (올인)</div>'
-    +'<div class="qr-big">'+usd(r.rate)+'</div>'
+    +'<div class="qr-big">'+usd(rate)+'</div>'
     +'<div class="qr-krw">≈ '+won(krw)+' <small>('+fmtFxShort()+')</small></div>'
     + (calcNote?'<div class="qr-note" style="margin-top:10px">'+calcNote+'</div>':'')
     +'<div class="qr-sec">산정 내역</div>'
     +'<div class="qr-line"><span class="k">입력 부피</span><span class="v">'+cbm.toFixed(3)+' CBM</span></div>'
-    +'<div class="qr-line"><span class="k">청구 CBM <span style="color:var(--ink-3);font-size:11px">(0.5 CBM 단위 올림)</span></span><span class="v">'+fmtCbm(r.billed)+' CBM</span></div>'
-    +'<div class="qr-line"><span class="k">적용 요율</span><span class="v">'+usd(r.rate)+'</span></div>'
+    +'<div class="qr-line"><span class="k">청구 CBM <span style="color:var(--ink-3);font-size:11px">(0.1 미만 유지 · 0.5/1.0 구간)</span></span><span class="v">'+fmtCbm(r.billed)+' CBM</span></div>'
+    +'<div class="qr-line"><span class="k">적용 요율</span><span class="v">'+usd(rate)+'</span></div>'
     +'<div class="qr-atcost"><strong>별도 비용 (At Cost)</strong><br>'
       +'· 관세(DUTY): HS Code별 상이, 실비 청구<br>'
       +'· 면장 발급 대행: 실비 (최소 ₩33,000)</div>'
@@ -1262,7 +1353,8 @@ function calcAir(){
   const volKg = (l&&w&&h) ? (l*w*h/RATE.air.volDivisor)*q : 0;
   const rawChargeable = Math.max(volKg, kg);
   const chargeable = Math.max(rawChargeable, RATE.air.minKg);   // 최소 10kg
-  const freight = chargeable*RATE.air.perKg;
+  const perKg = airPerKg();
+  const freight = chargeable*perKg;
   const permit = document.getElementById('a_permit').checked ? RATE.air.permitKrw : 0;
   const freightKrw = freight*usdKrwNow();
   const totalKrw = freightKrw + permit;
@@ -1276,7 +1368,7 @@ function calcAir(){
     +'<div class="qr-line"><span class="k">실중량</span><span class="v">'+(kg?kg.toFixed(1)+' kg':'—')+'</span></div>'
     +'<div class="qr-line"><span class="k">부피중량 <span style="color:var(--ink-3);font-size:11px">(L×W×H÷5000×'+q+')</span></span><span class="v">'+(volKg?volKg.toFixed(2)+' kg':'—')+'</span></div>'
     +'<div class="qr-line"><span class="k">청구중량 <span style="color:var(--ink-3);font-size:11px">('+heavier+'·최소10kg)</span></span><span class="v">'+chargeable.toFixed(2)+' kg</span></div>'
-    +'<div class="qr-line"><span class="k">운임 ('+chargeable.toFixed(1)+'kg × $13)</span><span class="v">'+usd(freight)+'</span></div>'
+    +'<div class="qr-line"><span class="k">운임 ('+chargeable.toFixed(1)+'kg × $'+perKg.toFixed(1)+')</span><span class="v">'+usd(freight)+'</span></div>'
     + (permit?'<div class="qr-line"><span class="k">면장 발급 대행</span><span class="v">₩33,000</span></div>':'')
     +'<div class="qr-atcost"><strong>미국 도착 후 출고비 (별도)</strong><br>'
       +'· 출고비: 박스 $3 / 팔렛 $15 · 라벨 $0.5<br>'
