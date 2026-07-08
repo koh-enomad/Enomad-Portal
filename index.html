@@ -142,6 +142,44 @@ header .brand em{font-style:normal;color:#8ED4E0}
 .secdiv{display:flex;align-items:center;gap:12px;margin:10px 0 2px;color:var(--ink-3);font-size:12px;font-weight:600;letter-spacing:.03em}
 .secdiv::before,.secdiv::after{content:'';flex:1;height:1px;background:var(--line)}
 
+/* ── 해상 항차 스케줄 ── */
+.voy-filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.voy-filter .cl{font-size:12px;color:var(--ink-3)}
+.voy-month{margin-bottom:22px}
+.voy-month h3{font-size:13px;font-weight:700;color:var(--teal-dark);margin-bottom:10px;
+  display:flex;align-items:center;gap:8px}
+.voy-month h3 .cnt{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--ink-3);
+  background:var(--teal-mist);border-radius:9px;padding:1px 8px}
+.voycard{background:var(--card);border:1px solid var(--line);border-radius:10px;
+  padding:14px 16px;margin-bottom:10px;position:relative;overflow:hidden}
+.voycard.closed{opacity:.6}
+.voycard.next{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal)}
+.voycard .vc-top{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.voycard .vc-round{font-size:15px;font-weight:700;color:var(--ink)}
+.voycard .vc-tag{font-size:10.5px;font-weight:700;border-radius:10px;padding:2px 9px}
+.voycard .vc-tag.open{background:var(--ok-soft);color:var(--ok)}
+.voycard .vc-tag.soon{background:var(--warn-soft);color:var(--warn)}
+.voycard .vc-tag.closed{background:#EEF1F2;color:var(--ink-3)}
+.voycard .vc-tag.next{background:var(--teal);color:#fff}
+.voycard .vc-dday{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--warn);font-weight:600}
+.voytrack{display:grid;grid-template-columns:repeat(5,1fr);gap:0}
+.voystep{position:relative;padding-top:20px;text-align:center}
+.voystep::before{content:'';position:absolute;top:6px;left:0;right:0;height:2px;background:var(--line)}
+.voystep:first-child::before{left:50%}
+.voystep:last-child::before{right:50%}
+.voystep .vs-dot{position:absolute;top:2px;left:50%;transform:translateX(-50%);
+  width:10px;height:10px;border-radius:50%;background:#CBDCE0;z-index:1}
+.voystep.mark .vs-dot{background:var(--teal)}
+.voystep .vs-lbl{font-size:10.5px;color:var(--ink-3);margin-bottom:2px}
+.voystep .vs-date{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--ink)}
+.voystep .vs-date.empty{color:var(--ink-3);font-weight:400}
+@media(max-width:640px){
+  .voytrack{grid-template-columns:1fr 1fr;gap:10px 4px}
+  .voystep::before{display:none}
+  .voystep{padding-top:0;text-align:left;padding-left:2px}
+  .voystep .vs-dot{display:none}
+}
+
 .soonbox{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:40px 28px;text-align:center}
 .soonbox h2{font-size:17px;color:var(--teal-dark);margin-bottom:10px}
 .soonbox p{font-size:13px;color:var(--ink-3);max-width:480px;margin:0 auto;line-height:1.8}
@@ -222,7 +260,7 @@ footer{max-width:1100px;margin:0 auto;padding:0 24px 40px;font-size:11.5px;color
   <div class="wrap">
     <div class="nav">
       <button class="on" id="nv0" onclick="nav(0)">진행 현황</button>
-      <button id="nv1" onclick="nav(1)">해상 항차 스케줄 <span class="soon">준비중</span></button>
+      <button id="nv1" onclick="nav(1)">해상 항차 스케줄</button>
       <button id="nv2" onclick="nav(2)">셀프 견적 <span class="soon">준비중</span></button>
     </div>
 
@@ -243,12 +281,12 @@ footer{max-width:1100px;margin:0 auto;padding:0 24px 40px;font-size:11.5px;color
     </div>
 
     <div id="pg1" class="hidden">
-      <div class="soonbox">
-        <div class="tag">COMING SOON</div>
-        <h2>해상 항차 스케줄</h2>
-        <p>부산 → LA 콘솔 항차의 선박명 · ETD/ETA · 서류 마감(면장/픽업 컷오프)을
-        확정 즉시 자동 반영합니다. 오픈되면 별도 안내 없이 이 탭에서 바로 확인 가능합니다.</p>
+      <div class="intro">
+        부산 → LA 콘솔 항차 스케줄입니다. <strong>서류마감·카고마감</strong>일 전까지 입고해야 해당 항차에 선적됩니다.
+        일정은 선사 사정에 따라 변동될 수 있습니다. <span id="voyStamp" style="color:var(--ink-3)"></span>
       </div>
+      <div class="voy-filter" id="voyFilter"></div>
+      <div id="voyList"></div>
     </div>
 
     <div id="pg2" class="hidden">
@@ -442,6 +480,7 @@ const DATA = STATE.data;            // rows 는 Firestore 스냅샷으로 갈아
 if(!DATA.rows) DATA.rows = [];
 if(!STATE.invoices) STATE.invoices = [];
 const INVOICES = STATE.invoices;
+let VOYAGES = [];                   // Firestore voyages 실시간 구독으로 채워짐
 let SHOW_COMPLETED = STATE.showCompleted !== false;
 let fbReady = false;                // Firestore 최초 스냅샷 수신 여부
 
@@ -485,6 +524,7 @@ function nav(i){
     document.getElementById('pg'+n).classList.toggle('hidden', n!==i);
     document.getElementById('nv'+n).classList.toggle('on', n===i);
   });
+  if(i===1) renderVoyages();
 }
 
 /* ── 필터 ── */
@@ -739,6 +779,131 @@ function downloadHTML(){
   DATA.exported = d.toISOString().slice(0,10);
 }
 
+/* ══════════ 해상 항차 스케줄 ══════════ */
+let voyMonthFilter = 'upcoming';   // upcoming | all | 특정 월
+
+function parseYMD(s){
+  const m = String(s||'').match(/(\d{4})-(\d{2})-(\d{2})/);
+  return m ? new Date(+m[1], +m[2]-1, +m[3]) : null;
+}
+function voyMonth(v){
+  const m = String(v.round||'').match(/(\d+)월/);
+  return m ? parseInt(m[1]) : null;
+}
+function fmtMD(s){
+  const d = parseYMD(s);
+  return d ? (d.getMonth()+1)+'/'+d.getDate() : (s||'—');
+}
+function ddayInfo(v){
+  // 서류마감 기준 D-day
+  const today = new Date(); today.setHours(0,0,0,0);
+  const doc = parseYMD(v.doc_close);
+  const etd = parseYMD(v.etd_busan);
+  if(etd && etd < today) return {state:'closed', tag:'출항완료', cls:'closed', txt:''};
+  if(doc){
+    const diff = Math.round((doc - today)/86400000);
+    if(diff < 0)  return {state:'closed', tag:'마감', cls:'closed', txt:''};
+    if(diff === 0) return {state:'open', tag:'서류마감 오늘', cls:'soon', txt:'D-DAY'};
+    if(diff <= 3) return {state:'open', tag:'마감임박', cls:'soon', txt:'D-'+diff};
+    return {state:'open', tag:'접수중', cls:'open', txt:'D-'+diff};
+  }
+  return {state:'open', tag:'예정', cls:'open', txt:''};
+}
+/* 오늘 기준 마감·출항이 지나지 않은 항차만 표시 (카고마감 → 서류마감 순) */
+function isVoyOpen(v){
+  const today = new Date(); today.setHours(0,0,0,0);
+  const etd = parseYMD(v.etd_busan);
+  if(etd && etd < today) return false;
+  const close = parseYMD(v.cargo_close) || parseYMD(v.doc_close);
+  if(close && close < today) return false;
+  return true;
+}
+
+function renderVoyages(){
+  const stamp = document.getElementById('voyStamp');
+  const list = document.getElementById('voyList');
+  const filterBox = document.getElementById('voyFilter');
+
+  if(!VOYAGES.length){
+    filterBox.innerHTML = '';
+    list.innerHTML = fbReady
+      ? '<div class="empty"><div class="big">등록된 항차가 없습니다</div>새 항차가 확정되면 자동으로 표시됩니다.</div>'
+      : '<div class="empty"><div class="big">항차 스케줄 불러오는 중…</div>구글시트와 동기화된 최신 스케줄을 가져오고 있습니다.</div>';
+    return;
+  }
+
+  // 정렬: 출항일(sortKey) 기준 — 마감·출항 지난 항차 제외
+  const sorted = VOYAGES.slice()
+    .filter(isVoyOpen)
+    .sort((a,b)=>{
+    const da = parseYMD(a.sortKey||a.etd_busan), db = parseYMD(b.sortKey||b.etd_busan);
+    if(da&&db) return da-db; if(da) return -1; if(db) return 1; return 0;
+  });
+
+  // 다음 항차 = 표시 목록 중 첫 번째
+  const nextRound = sorted.length ? sorted[0].round : null;
+
+  // 필터 칩 (월별, 접수 가능 항차만)
+  const months = [...new Set(sorted.map(voyMonth).filter(Boolean))].sort((a,b)=>a-b);
+  filterBox.innerHTML = '<span class="cl">보기:</span>'
+    +'<button class="chip'+(voyMonthFilter==='upcoming'?' on':'')+'" onclick="setVoyFilter(\'upcoming\')">접수 가능 ('+sorted.length+')</button>'
+    + months.map(m=>{
+      const cnt = sorted.filter(v=>voyMonth(v)===m).length;
+      return '<button class="chip'+(voyMonthFilter===m?' on':'')+'" onclick="setVoyFilter('+m+')">'+m+'월 ('+cnt+')</button>';
+    }).join('');
+
+  // 표시 대상
+  let show = sorted;
+  if(voyMonthFilter!=='upcoming') show = sorted.filter(v=>voyMonth(v)===voyMonthFilter);
+
+  if(!show.length){
+    const msg = !sorted.length
+      ? '현재 접수 가능한 항차가 없습니다'
+      : '해당 조건의 항차가 없습니다';
+    list.innerHTML = '<div class="empty"><div class="big">'+msg+'</div></div>';
+    stamp.textContent = '';
+    return;
+  }
+
+  // 월별 그룹핑
+  const groups = {};
+  show.forEach(v=>{ const m=voyMonth(v)||0; (groups[m]=groups[m]||[]).push(v); });
+  const gmonths = Object.keys(groups).map(Number).sort((a,b)=>a-b);
+
+  list.innerHTML = gmonths.map(m=>{
+    const cards = groups[m].map(v=>voyCard(v, v.round===nextRound)).join('');
+    return '<div class="voy-month"><h3>'+(m?m+'월 콘솔 항차':'기타')+' <span class="cnt">'+groups[m].length+'항차</span></h3>'+cards+'</div>';
+  }).join('');
+
+  stamp.textContent = DATA.exported ? '· 갱신 '+DATA.exported : '';
+}
+
+function voyCard(v, isNext){
+  const dd = ddayInfo(v);
+  const steps = [
+    ['서류마감', v.doc_close],
+    ['카고마감', v.cargo_close],
+    ['부산출항', v.etd_busan],
+    ['LA도착', v.eta_la],
+    ['FBA도착(예상)', v.eta_fba],
+  ];
+  const track = steps.map(s=>{
+    const has = !!parseYMD(s[1]);
+    return '<div class="voystep'+(has?' mark':'')+'"><div class="vs-dot"></div>'
+      +'<div class="vs-lbl">'+s[0]+'</div>'
+      +'<div class="vs-date'+(has?'':' empty')+'">'+(has?fmtMD(s[1]):'—')+'</div></div>';
+  }).join('');
+  const tagCls = isNext ? 'next' : dd.cls;
+  const tagTxt = isNext ? '다음 항차' : dd.tag;
+  return '<div class="voycard'+(dd.state==='closed'?' closed':'')+(isNext?' next':'')+'">'
+    +'<div class="vc-top"><span class="vc-round">'+esc(v.round)+'</span>'
+    +'<span class="vc-tag '+tagCls+'">'+tagTxt+'</span>'
+    +(dd.txt?'<span class="vc-dday">'+dd.txt+'</span>':'')
+    +'</div><div class="voytrack">'+track+'</div></div>';
+}
+
+function setVoyFilter(f){ voyMonthFilter=f; renderVoyages(); }
+
 /* ══════════ Firestore 실시간 브리지 ══════════
    하단 module 스크립트가 Firestore 스냅샷을 받아 이 함수들을 호출합니다. */
 function setLive(on){
@@ -759,6 +924,13 @@ window.__onShipments = function(rows){
 window.__onFbError = function(){ setLive(false); };
 window.__onMeta = function(meta){
   if(meta && meta.syncedAt){ DATA.exported = String(meta.syncedAt).slice(0,10); if(session) render(); }
+};
+/* Firestore voyages 스냅샷 → 항차 스케줄 갱신 */
+window.__onVoyages = function(rows){
+  VOYAGES = rows;
+  fbReady = true;
+  // 항차 탭이 열려 있으면 즉시 리렌더
+  if(session && !document.getElementById('pg1').classList.contains('hidden')) renderVoyages();
 };
 
 /* ── 세션 유지 (탭 닫으면 만료) ── */
@@ -800,6 +972,16 @@ try {
       window.__onShipments(rows);
     },
     (err) => { console.error("shipments 구독 오류:", err); window.__onFbError(); }
+  );
+
+  /* voyages(해상 항차) 실시간 구독 */
+  onSnapshot(collection(db, "voyages"),
+    (snap) => {
+      const rows = [];
+      snap.forEach(d => { const r = d.data(); delete r.updatedAt; rows.push(r); });
+      window.__onVoyages(rows);
+    },
+    (err) => { console.error("voyages 구독 오류:", err); }
   );
 
   /* 동기화 메타(마지막 동기화 시각) 구독 */
