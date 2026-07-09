@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ENOMAD 화물 트래킹 — 애드캐리 파트너 포털</title>
+<title>ENOMAD 화물 트래킹 포털</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <!-- ★ Firebase SDK (v10 modular, CDN) — firebaseConfig를 아래 <script type="module">에서 채우세요 -->
@@ -22,7 +22,6 @@
 body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.55}
 button{font-family:var(--sans)}
 
-/* ── access gate ── */
 #gate{min-height:100vh;display:flex;align-items:center;justify-content:center;
   background:linear-gradient(160deg,var(--teal-dark) 0%,var(--teal-deep) 60%,var(--teal) 130%);padding:24px}
 .gatebox{background:var(--card);border-radius:12px;padding:38px 36px 32px;width:100%;max-width:400px;
@@ -40,7 +39,6 @@ button{font-family:var(--sans)}
 .gatebox .err{color:var(--red);font-size:12.5px;margin-top:10px;min-height:18px}
 .gatebox .foot{margin-top:20px;font-size:11.5px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:14px}
 
-/* ── app ── */
 #app{display:none}
 header{background:var(--teal-dark);color:#fff;padding:16px 26px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 header .brand{font-weight:700;font-size:18px;letter-spacing:.04em}
@@ -67,13 +65,10 @@ header .brand em{font-style:normal;color:#8ED4E0}
 .nav .soon{font-size:9.5px;font-weight:700;color:var(--warn);background:var(--warn-soft);
   border-radius:8px;padding:1px 7px;margin-left:6px;vertical-align:2px;letter-spacing:.03em}
 
-
-
 .intro{background:var(--teal-soft);border:1px solid #C6E0E6;border-radius:8px;padding:12px 16px;
   font-size:13px;color:var(--teal-dark);margin-bottom:16px}
 .intro strong{font-weight:700}
 
-/* admin toolbar */
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px;
   background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
 .toolbar .tt{font-size:11px;font-weight:700;color:var(--teal-deep);letter-spacing:.05em;margin-right:4px}
@@ -93,13 +88,13 @@ header .brand em{font-style:normal;color:#8ED4E0}
   font-size:12.5px;padding:5px 13px;border-radius:15px;cursor:pointer}
 .chip.on{background:var(--teal-dark);border-color:var(--teal-dark);color:#fff}
 
-/* shipment cards */
 .cards{display:flex;flex-direction:column;gap:14px}
 .ship{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .ship .top{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid #EDF3F4;flex-wrap:wrap}
 .ship .badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 11px;border-radius:12px;white-space:nowrap}
 .b-sea{background:var(--teal-soft);color:var(--teal-deep)}
 .b-air{background:var(--air-soft);color:#1E4E75}
+.b-ch{background:#F0EAF7;color:#6B4C9A}
 .b-stat{background:var(--warn-soft);color:var(--warn)}
 .b-stat.mid{background:var(--teal-soft);color:var(--teal-deep)}
 .b-stat.fin{background:var(--ok-soft);color:var(--ok)}
@@ -108,11 +103,6 @@ header .brand em{font-style:normal;color:#8ED4E0}
 .ship.donecard .tstep.done .dot,.ship.donecard .tstep.done .bar{background:var(--ok);border-color:var(--ok)}
 .ship .co{font-size:16px;font-weight:700}
 .ship .ref{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
-.editbtns{margin-left:auto;display:flex;gap:6px}
-.ebtn{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--ink-2);
-  border-radius:6px;padding:4px 11px;font-size:12px;cursor:pointer}
-.ebtn:hover{border-color:var(--teal);color:var(--teal-deep)}
-.ebtn.del:hover{border-color:var(--red);color:var(--red)}
 
 .ship .body{padding:18px 20px 20px}
 .meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px 24px;margin-bottom:20px}
@@ -142,7 +132,6 @@ header .brand em{font-style:normal;color:#8ED4E0}
 .secdiv{display:flex;align-items:center;gap:12px;margin:10px 0 2px;color:var(--ink-3);font-size:12px;font-weight:600;letter-spacing:.03em}
 .secdiv::before,.secdiv::after{content:'';flex:1;height:1px;background:var(--line)}
 
-/* ── 해상 항차 스케줄 ── */
 .voy-filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
 .voy-filter .cl{font-size:12px;color:var(--ink-3)}
 .voy-month{margin-bottom:22px}
@@ -180,13 +169,6 @@ header .brand em{font-style:normal;color:#8ED4E0}
   .voystep .vs-dot{display:none}
 }
 
-.soonbox{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:40px 28px;text-align:center}
-.soonbox h2{font-size:17px;color:var(--teal-dark);margin-bottom:10px}
-.soonbox p{font-size:13px;color:var(--ink-3);max-width:480px;margin:0 auto;line-height:1.8}
-.soonbox .tag{display:inline-block;font-size:11px;font-weight:700;color:var(--warn);background:var(--warn-soft);
-  border-radius:10px;padding:3px 12px;margin-bottom:14px;letter-spacing:.04em}
-
-/* ── 셀프 견적 계산기 ── */
 .q-tabs{display:flex;gap:0;border-bottom:2px solid var(--line);margin-bottom:18px}
 .q-tab{appearance:none;border:none;background:none;cursor:pointer;font-size:14px;font-weight:600;
   color:var(--ink-3);padding:9px 20px 8px;position:relative}
@@ -240,37 +222,32 @@ header .brand em{font-style:normal;color:#8ED4E0}
   font-size:11.5px;color:var(--ink-2);line-height:1.7}
 .q-result .qr-warehouse strong{color:var(--teal-dark)}
 
-/* ── modal ── */
 .overlay{position:fixed;inset:0;background:rgba(12,34,40,.55);display:flex;align-items:flex-start;
   justify-content:center;padding:40px 16px;overflow:auto;z-index:50}
 .modal{background:var(--card);border-radius:12px;width:100%;max-width:620px;padding:24px 26px 22px;
   box-shadow:0 24px 70px rgba(10,40,48,.4)}
 .modal h2{font-size:16px;color:var(--teal-dark);margin-bottom:18px}
 .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
-.fgrid .full{grid-column:1/-1}
 .fld label{display:block;font-size:11.5px;font-weight:600;color:var(--ink-2);margin-bottom:4px}
 .fld input,.fld select{width:100%;border:1px solid var(--line);border-radius:6px;padding:8px 10px;
   font-family:var(--sans);font-size:13px;background:#fff;color:var(--ink)}
 .fld input:focus,.fld select:focus{outline:2px solid var(--teal);border-color:var(--teal)}
 .fld input.mono{font-family:var(--mono)}
-.fld .hint{font-size:10.5px;color:var(--ink-3);margin-top:3px}
 .mact{display:flex;gap:10px;margin-top:22px;justify-content:flex-end}
 .mact .cancel{background:var(--card);border:1px solid var(--line);color:var(--ink-2);border-radius:7px;padding:9px 18px;font-size:13px;cursor:pointer}
 .mact .save{background:var(--teal-deep);border:none;color:#fff;border-radius:7px;padding:9px 22px;font-size:13px;font-weight:600;cursor:pointer}
 .mact .save:hover{background:var(--teal-dark)}
-.seafields,.airfields{display:contents}
 
-/* code manager */
-.codelist{border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:14px}
+.codelist{border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:14px;max-height:340px;overflow-y:auto}
 .coderow{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid #EDF3F4;font-size:13px}
 .coderow:last-child{border-bottom:none}
-.coderow .cc{font-family:var(--mono);font-size:12.5px;width:150px;color:var(--teal-deep);font-weight:600}
+.coderow .cc{font-family:var(--mono);font-size:12.5px;width:140px;color:var(--teal-deep);font-weight:600}
 .coderow .cn2{flex:1}
 .coderow .cr{font-size:10.5px;font-weight:700;color:var(--teal-deep);background:var(--teal-soft);border-radius:9px;padding:2px 8px}
 .coderow .cx{appearance:none;border:none;background:none;color:var(--ink-3);cursor:pointer;font-size:15px;padding:2px 6px}
 .coderow .cx:hover{color:var(--red)}
 .codeadd{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}
-.codeadd .fld{flex:1;min-width:130px}
+.codeadd .fld{flex:1;min-width:120px}
 
 footer{max-width:1100px;margin:0 auto;padding:0 24px 40px;font-size:11.5px;color:var(--ink-3)}
 .hidden{display:none!important}
@@ -289,9 +266,9 @@ footer{max-width:1100px;margin:0 auto;padding:0 24px 40px;font-size:11.5px;color
 <div id="gate">
   <div class="gatebox">
     <div class="logo">ENOMAD <em>Tracking</em></div>
-    <p>애드캐리 파트너 · 고객사 전용 화물 진행 현황 포털입니다.<br>발급받은 접속 코드를 입력하세요.</p>
+    <p>파트너 · 고객사 전용 화물 진행 현황 포털입니다.<br>발급받은 접속 코드를 입력하세요.</p>
     <label for="code">접속 코드</label>
-    <input id="code" type="text" placeholder="예: QRING-XXXXXX" autocomplete="off"
+    <input id="code" type="text" placeholder="예: LEEZK-XXXXXX" autocomplete="off"
       onkeydown="if(event.key==='Enter')login()">
     <button onclick="login()">진행 현황 확인</button>
     <div class="err" id="gateErr"></div>
@@ -320,8 +297,6 @@ footer{max-width:1100px;margin:0 auto;padding:0 24px 40px;font-size:11.5px;color
 
     <div id="pg0">
       <div class="intro" id="introMsg"></div>
-
-      <!-- 관리자 전용 편집 툴바 -->
       <div class="toolbar hidden" id="toolbar">
         <span class="tt">관리 도구</span>
         <span class="ssot-note">화물 데이터는 구글시트에서 관리됩니다 (실시간 동기화)</span>
@@ -329,7 +304,6 @@ footer{max-width:1100px;margin:0 auto;padding:0 24px 40px;font-size:11.5px;color
         <button class="tbtn dl" onclick="downloadHTML()">⬇ 코드 변경 저장 (HTML)</button>
         <span class="dirty hidden" id="dirtyFlag">● 저장되지 않은 코드 변경 — HTML 저장하세요</span>
       </div>
-
       <div class="cofilter" id="cofilter"></div>
       <div class="cards" id="cards"></div>
     </div>
@@ -346,17 +320,14 @@ footer{max-width:1100px;margin:0 auto;padding:0 24px 40px;font-size:11.5px;color
     <div id="pg2" class="hidden">
       <div class="intro">
         박스/팔렛 정보를 입력하면 예상 견적을 즉시 확인할 수 있습니다.
-        <strong>참고용 예상 금액</strong>이며 실제 견적은 화물 확정 후 확정됩니다.<span id="qFxStamp" style="color:var(--ink-3)"></span>
+        <strong>참고용 예상 금액</strong>이며 실제 견적은 화물 확정 후 확정됩니다. 기준 요율: 2026년 6월.
       </div>
-
       <div class="q-tabs">
         <button class="q-tab on" id="qtSea" onclick="qMode('sea')">해상 LCL</button>
         <button class="q-tab" id="qtAir" onclick="qMode('air')">항공</button>
       </div>
-
       <div class="q-grid">
         <div class="q-form panel">
-          <!-- 해상 입력 -->
           <div id="qSeaForm">
             <div class="q-sub">화물 정보 입력</div>
             <div class="q-radio">
@@ -364,14 +335,12 @@ footer{max-width:1100px;margin:0 auto;padding:0 24px 40px;font-size:11.5px;color
               <label><input type="radio" name="qSeaType" value="pallet" onchange="qSeaTypeChange()"> 팔렛 사이즈</label>
               <label><input type="radio" name="qSeaType" value="box" onchange="qSeaTypeChange()"> 박스 사이즈만</label>
             </div>
-
             <div id="qSeaCbm" class="q-fields">
               <div class="fld"><label>총 CBM (m³)</label><input id="s_cbm" type="number" step="0.01" placeholder="예: 2.35" oninput="calcSea()"></div>
             </div>
             <div id="qSeaPallet" class="q-fields hidden">
               <div id="palletRows"></div>
-              <button type="button" class="pallet-add" onclick="addPalletRow()">+ 다른 사이즈 팔렛 추가</button>
-              <div class="q-note">※ 동일 사이즈는 팔렛 수로 입력하세요. 사이즈가 다르면 추가 버튼으로 입력합니다.</div>
+              <button class="pallet-add" onclick="addPalletRow()">＋ 팔렛 추가</button>
             </div>
             <div id="qSeaBox" class="q-fields hidden">
               <div class="q-row">
@@ -380,11 +349,9 @@ footer{max-width:1100px;margin:0 auto;padding:0 24px 40px;font-size:11.5px;color
                 <div class="fld"><label>박스 높이 (cm)</label><input id="b_h" type="number" placeholder="30" oninput="calcSea()"></div>
                 <div class="fld"><label>박스 수량</label><input id="b_qty" type="number" placeholder="20" oninput="calcSea()"></div>
               </div>
-              <div class="q-note">※ 110×110cm 팔렛 기준, 적재 높이 160cm까지 1팔렛으로 계산합니다. 초과 시 팔렛을 나눠 CBM을 산정합니다.</div>
+              <div class="q-note">※ 팔렛 사이즈를 모를 경우, 110×110cm 팔렛에 적재하는 기준으로 CBM을 추정합니다.</div>
             </div>
           </div>
-
-          <!-- 항공 입력 -->
           <div id="qAirForm" class="hidden">
             <div class="q-sub">화물 정보 입력</div>
             <div class="q-row">
@@ -402,68 +369,17 @@ footer{max-width:1100px;margin:0 auto;padding:0 24px 40px;font-size:11.5px;color
             <div class="q-note">※ 부피중량 = 가로×세로×높이 ÷ 5000. 실중량과 비교해 큰 값으로 청구됩니다.</div>
           </div>
         </div>
-
-        <!-- 결과 -->
         <div class="q-result panel" id="qResult"></div>
       </div>
     </div>
   </div>
 
   <footer>
-    본 페이지는 업무 진행 공유용이며 실시간 시스템 조회가 아닙니다. 표기된 일정은 선사/항공사 사정에 따라 변동될 수 있습니다.
-    · ENOMAD 이노마드
+    본 페이지는 업무 진행 공유용이며 실시간 시스템 조회가 아닙니다. 표기된 일정은 선사/항공사 사정에 따라 변동될 수 있습니다. · ENOMAD 이노마드
   </footer>
 </div>
 
-<!-- ═══════════ 건 등록/수정 모달 ═══════════ -->
-<div class="overlay hidden" id="shipModal">
-  <div class="modal">
-    <h2 id="shipModalTitle">새 건 추가</h2>
-    <div class="fgrid">
-      <div class="fld"><label>업체명 *</label><input id="f_company" placeholder="예: 큐링"></div>
-      <div class="fld"><label>운송 모드 *</label>
-        <select id="f_mode" onchange="modeFields()">
-          <option value="sea">해상 LCL</option>
-          <option value="air">항공</option>
-        </select>
-      </div>
-      <div class="fld"><label>진행 상태 *</label>
-        <select id="f_status">
-          <option>접수</option><option>부킹완료</option><option>픽업완료</option>
-          <option>출항완료</option><option>입고완료</option><option value="청구완료">완료</option>
-        </select>
-      </div>
-      <div class="fld"><label>No. (월-순번)</label><input id="f_no" class="mono" placeholder="예: 7-1"></div>
-
-      <div class="seafields" id="seaFields">
-        <div class="fld"><label>BK# (부킹번호)</label><input id="f_bk" class="mono" placeholder="ULAX26...."></div>
-        <div class="fld"><label>선박 / 항차</label><input id="f_vessel" placeholder="HMM DIAMOND · ETD 7/15 ETA 7/30"></div>
-      </div>
-      <div class="airfields hidden" id="airFields">
-        <div class="fld"><label>항공 구분</label>
-          <select id="f_type"><option>항공 특송</option><option>에어카고</option></select>
-        </div>
-        <div class="fld"></div>
-      </div>
-
-      <div class="fld"><label>품목</label><input id="f_product" placeholder="예: 화장품"></div>
-      <div class="fld"><label>물량</label><input id="f_qty" placeholder="예: 3PLT(27ct), 502kg, 4.58CBM"></div>
-
-      <div class="fld"><label>접수일</label><input id="f_order_date" type="date"></div>
-      <div class="fld"><label>수출면장</label><input id="f_export_permit" class="mono" placeholder="날짜 또는 O / -"></div>
-      <div class="fld"><label>픽업</label><input id="f_pickup" class="mono" placeholder="날짜 또는 메모"></div>
-      <div class="fld"><label id="depLbl">부산 출항 (ETD)</label><input id="f_depart" class="mono" placeholder="YYYY-MM-DD"></div>
-      <div class="fld"><label>현지 입고</label><input id="f_flow_inbound" class="mono" placeholder="YYYY-MM-DD"></div>
-      <div class="fld"><div class="hint" style="margin-top:20px">날짜 필드에 값이 있으면 파이프라인에 완료 표시됩니다.<br>미완료 단계는 비워 두세요.</div></div>
-    </div>
-    <div class="mact">
-      <button class="cancel" onclick="closeModal('shipModal')">취소</button>
-      <button class="save" onclick="saveShip()">저장</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════ 접속 코드 관리 모달 ═══════════ -->
+<!-- 접속 코드 관리 모달 -->
 <div class="overlay hidden" id="codeModal">
   <div class="modal">
     <h2>접속 코드 관리</h2>
@@ -472,127 +388,130 @@ footer{max-width:1100px;margin:0 auto;padding:0 24px 40px;font-size:11.5px;color
       <div class="fld"><label>새 코드</label><input id="c_code" class="mono" placeholder="예: NEWCO-A1B2C3" style="text-transform:uppercase"></div>
       <div class="fld"><label>업체명</label><input id="c_name" placeholder="예: 뉴컴퍼니"></div>
       <div class="fld" style="flex:0 0 auto;min-width:auto"><label>권한</label>
-        <select id="c_role"><option value="customer">업체 (본인 건만)</option><option value="viewAll">애드캐리 (전체 조회)</option><option value="admin">이노마드 (전체 + 편집)</option></select>
+        <select id="c_role" onchange="cRoleChange()">
+          <option value="customer">업체 (본인 건만)</option>
+          <option value="viewAll">파트너 (채널 전체)</option>
+          <option value="admin">이노마드 (전체+편집)</option>
+        </select>
+      </div>
+      <div class="fld hidden" id="cChannelFld" style="flex:0 0 auto;min-width:auto"><label>채널</label>
+        <select id="c_channel"><option value="adcarry">애드캐리</option><option value="momentum">모멘텀</option></select>
       </div>
       <button class="tbtn" style="height:36px" onclick="addCode()">추가</button>
     </div>
-    <div class="mact">
-      <button class="cancel" onclick="closeModal('codeModal')">닫기</button>
-    </div>
+    <div class="mact"><button class="cancel" onclick="closeModal('codeModal')">닫기</button></div>
   </div>
 </div>
 
 <!-- ================================================================
-     ★ PORTAL STATE — 접속 코드 + 화물 데이터.
-     화면의 [관리 도구]로 수정한 뒤 [HTML 다운로드]하면
-     이 블록이 갱신된 새 파일이 저장됩니다. 그 파일을 GitHub Pages에
-     덮어쓰기 업로드하면 배포 완료.
+     ★ PORTAL STATE — 접속 코드. 화물 데이터는 Firestore 실시간 소스.
+     [접속 코드 관리]로 수정 후 [HTML 저장]하면 이 블록이 갱신됩니다.
      ================================================================ -->
 <script type="application/json" id="portal-state">{
  "access": {
-  "ENOMAD-V3XB5G": {
+  "ENOMAD-Q674PF": {
    "role": "admin",
    "name": "이노마드",
-   "label": "ADMIN"
+   "label": "이노마드"
   },
-  "ADCARRY-U7SY2E": {
+  "ADCARRY-9Y2239": {
    "role": "viewAll",
    "name": "애드캐리",
-   "label": "PARTNER"
+   "label": "PARTNER",
+   "channel": "adcarry"
   },
-  "QRING-TWV6C7": {
+  "MOMENTUM-P7HX23": {
+   "role": "viewAll",
+   "name": "모멘텀",
+   "label": "PARTNER",
+   "channel": "momentum"
+  },
+  "QRING-FXVQH9": {
    "company": "큐링",
    "name": "큐링"
   },
-  "GREEN-NJ2XQ4": {
+  "GREEN-5DZW7U": {
    "company": "그린토크",
    "name": "그린토크"
   },
-  "JDC-7K7ZMZ": {
+  "JDC-KRMMUH": {
    "company": "제이디씨",
    "name": "제이디씨"
   },
-  "FUN-FDDDQW": {
+  "FUN-GS9M4P": {
    "company": "펀샤인",
    "name": "펀샤인"
   },
-  "LEVI-9CW9S2": {
+  "LEVI-SM4Q78": {
    "company": "레비시아",
    "name": "레비시아"
   },
-  "BELONG-QE8PUT": {
+  "BELONG-Y4E3XT": {
    "company": "빌롱스카프",
    "name": "빌롱스카프"
   },
-  "MENTO-KRFM2F": {
+  "MENTO-3WARW5": {
    "company": "멘토클리닉",
    "name": "멘토클리닉"
   },
-  "SATER-ZWW4N7": {
+  "SATER-89NAZ2": {
    "company": "새터",
    "name": "새터"
-  }
- },
- "data": {
-  "rows": [],
-  "exported": "2026-07-07",
-  "_fallback": "Firestore 실시간 데이터로 대체됨"
- },
- "showCompleted": true,
- "invoices": [
-  {
-   "company": "새터",
-   "method": "pct_bill",
-   "month": 2,
-   "no": "ADC-2602-01",
-   "amount": 4217768,
-   "rate": 15,
-   "profit": 0,
-   "fixed": 0,
-   "status": "정산완료",
-   "memo": "애드캐리 쉐어 15%"
   },
-  {
-   "company": "멘토클리닉",
-   "method": "pct_profit",
-   "month": 6,
-   "no": "ADC-2606-03",
-   "amount": 1432733,
-   "rate": 30,
-   "profit": 506543,
-   "fixed": 0,
-   "status": "미정산",
-   "memo": "수익 기준 30%"
+  "LAMED-E527GS": {
+   "company": "라메디텍",
+   "name": "라메디텍"
   },
-  {
-   "company": "그린토크",
-   "method": "fixed",
-   "month": 3,
-   "no": "ADC-2603-01",
-   "amount": 3536551,
-   "rate": 0,
-   "profit": 0,
-   "fixed": 300000,
-   "status": "미정산",
-   "memo": "건별 고정 쉐어"
+  "LEEZK-YBAYNQ": {
+   "company": "리즈케이",
+   "name": "리즈케이"
+  },
+  "MOODC-KV9833": {
+   "company": "무드코코넛",
+   "name": "무드코코넛"
+  },
+  "ARCAD-2VGJ9T": {
+   "company": "아르카디아",
+   "name": "아르카디아"
+  },
+  "SRCCE-3X6SEK": {
+   "company": "에스알씨쎄라텍(주)",
+   "name": "에스알씨쎄라텍(주)"
+  },
+  "WINIC-U8ZSMT": {
+   "company": "위니코니",
+   "name": "위니코니"
+  },
+  "KAOMO-ZNRGQ8": {
+   "company": "카오모비",
+   "name": "카오모비"
+  },
+  "TEXTO-76XRWS": {
+   "company": "텍스토머",
+   "name": "텍스토머"
+  },
+  "PNMIN-KPAF5K": {
+   "company": "피앤엠인터내셔날",
+   "name": "피앤엠인터내셔날"
+  },
+  "PPNUT-KDG79Q": {
+   "company": "피피넛",
+   "name": "피피넛"
   }
- ]
+ }
 }</script>
 
 <script>
-/* ── 상태 로드 ──
-   access(접속 코드) · invoices 는 이 파일에 내장 유지.
-   data.rows 는 Firestore 실시간 구독으로 교체됩니다(하단 module 스크립트). */
+/* ── 상태 로드 ── access(접속 코드)만 내장. 화물은 Firestore 실시간. */
 const stateEl = document.getElementById('portal-state');
 const STATE = JSON.parse(stateEl.textContent);
 const ACCESS = STATE.access;
-const DATA = STATE.data;            // rows 는 Firestore 스냅샷으로 갈아끼워짐
-if(!DATA.rows) DATA.rows = [];
-if(!STATE.invoices) STATE.invoices = [];
-const INVOICES = STATE.invoices;
-let VOYAGES = [];                   // Firestore voyages 실시간 구독으로 채워짐
-let SHOW_COMPLETED = STATE.showCompleted !== false;
-let fbReady = false;                // Firestore 최초 스냅샷 수신 여부
+const DATA = { rows: [], exported: '' };   // Firestore 스냅샷으로 채워짐
+let VOYAGES = [];
+let fbReady = false;
+
+/* 채널 표시명 */
+const CHANNEL_NAME = { adcarry:'애드캐리', momentum:'모멘텀', direct:'개별' };
 
 const SEA_STEPS = [
   {key:'order_date',lbl:'접수'},{key:'export_permit',lbl:'수출면장'},{key:'pickup',lbl:'픽업'},
@@ -607,11 +526,10 @@ const isDone = r => r.status === '청구완료' || stepDone(r.flow_inbound);
 const esc = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
 let session = null, sessionCode = null, dirty = false;
-/* 권한: admin=이노마드(편집), viewAll=애드캐리(전체 조회), 그 외=업체 본인 건 */
+/* 권한: admin=이노마드(전체+편집), viewAll=파트너(자기 채널 전체), customer=업체 본인 건 */
 const canEdit = () => session && session.role === 'admin';
 const seesAll = () => session && (session.role === 'admin' || session.role === 'viewAll');
 
-/* ── 로그인 ── */
 function login(){
   const raw = document.getElementById('code').value.trim().toUpperCase();
   const acc = ACCESS[raw];
@@ -625,10 +543,9 @@ function enter(){
   document.getElementById('gate').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   document.getElementById('whoName').textContent = session.name;
-  document.getElementById('whoRole').textContent = session.label || 'CUSTOMER';
+  document.getElementById('whoRole').textContent = session.label || (session.role==='viewAll'?'PARTNER':'CUSTOMER');
   document.getElementById('toolbar').classList.toggle('hidden', !canEdit());
   render();
-  loadFxRate();
 }
 function nav(i){
   [0,1,2].forEach(n=>{
@@ -636,10 +553,9 @@ function nav(i){
     document.getElementById('nv'+n).classList.toggle('on', n===i);
   });
   if(i===1) renderVoyages();
-  if(i===2){ loadFxRate(); qMode(qCurrentMode); }
+  if(i===2) qMode(qCurrentMode);
 }
 
-/* ── 필터 ── */
 let coFilter='all', stFilter='all';
 function setCo(c,btn){ coFilter=c; togChips(btn,'co'); renderCards(); }
 function setSt(s,btn){ stFilter=s; togChips(btn,'st'); renderCards(); }
@@ -648,9 +564,10 @@ function togChips(btn,g){
   btn.classList.add('on');
 }
 function baseRows(){
-  /* 애드캐리(viewAll)·이노마드(admin): 전체 건. 그 외: 본인 건만 (완료 이력 포함) */
-  if(!seesAll()) return DATA.rows.filter(r=>r.company === session.company);
-  return SHOW_COMPLETED ? DATA.rows.slice() : DATA.rows.filter(r=>!isDone(r));
+  /* admin: 전체 채널 / viewAll: 자기 채널만 / customer: 본인 건만 */
+  if(session.role === 'admin') return DATA.rows.slice();
+  if(session.role === 'viewAll') return DATA.rows.filter(r=>r.channel === session.channel);
+  return DATA.rows.filter(r=>r.company === session.company);
 }
 function visibleRows(){
   let rows = baseRows();
@@ -661,12 +578,12 @@ function visibleRows(){
   return rows;
 }
 
-/* ── 렌더 ── */
 function render(){
   const all = baseRows();
   const prog = all.filter(r=>!isDone(r)).length, done = all.length - prog;
+  const chLabel = session.role==='viewAll' ? (CHANNEL_NAME[session.channel]||'') + ' 채널 ' : '';
   document.getElementById('introMsg').innerHTML = seesAll()
-    ? '<strong>'+esc(session.name)+'</strong> — 애드캐리 채널 연결 고객 전체 건입니다. 진행 중 '+prog+'건 · 완료 '+done+'건. 기준일 '+esc(DATA.exported||'')+'.'
+    ? '<strong>'+esc(session.name)+'</strong> — '+chLabel+'연결 고객 전체 건입니다. 진행 중 '+prog+'건 · 완료 '+done+'건. 기준일 '+esc(DATA.exported||'')+'.'
     : '<strong>'+esc(session.name)+'</strong> 님의 화물 현황입니다 — 진행 중 '+prog+'건 · 완료된 과거 이력 '+done+'건. 기준일 '+esc(DATA.exported||'')+'.';
 
   let chips = '<span class="cl">상태:</span>'
@@ -686,15 +603,11 @@ function render(){
 function renderCards(){
   const rows = visibleRows();
   const box = document.getElementById('cards');
-  const isAdmin = canEdit();
+  const showChannel = session.role === 'admin';   // 이노마드만 채널 배지 표시
   if(!rows.length){
-    if(!fbReady){
-      box.innerHTML = '<div class="empty"><div class="big">실시간 데이터 불러오는 중…</div>'
-        +'구글시트와 동기화된 최신 현황을 가져오고 있습니다.</div>';
-    } else {
-      box.innerHTML = '<div class="empty"><div class="big">표시할 화물이 없습니다</div>'
-        +'새 건이 접수되면 이 화면에 자동으로 표시됩니다.<br>신규 발송 문의: sel@enomad.co.kr</div>';
-    }
+    box.innerHTML = fbReady
+      ? '<div class="empty"><div class="big">표시할 화물이 없습니다</div>새 건이 접수되면 이 화면에 자동으로 표시됩니다.<br>신규 발송 문의: sel@enomad.co.kr</div>'
+      : '<div class="empty"><div class="big">실시간 데이터 불러오는 중…</div>구글시트와 동기화된 최신 현황을 가져오고 있습니다.</div>';
     return;
   }
   let firstDoneMarked = false;
@@ -703,10 +616,7 @@ function renderCards(){
     const steps = isAir?AIR_STEPS:SEA_STEPS;
     const done = isDone(r);
     let divider = '';
-    if(done && !firstDoneMarked && stFilter==='all'){
-      firstDoneMarked = true;
-      divider = '<div class="secdiv">완료된 이력</div>';
-    }
+    if(done && !firstDoneMarked && stFilter==='all'){ firstDoneMarked = true; divider = '<div class="secdiv">완료된 이력</div>'; }
     let lastDone=-1;
     steps.forEach((s,i)=>{ if(stepDone(r[s.key])) lastDone=i; });
     if(done) lastDone = steps.length-1;
@@ -726,108 +636,31 @@ function renderCards(){
       ['접수일', esc(r.order_date)||'—'],
     ].filter(Boolean).map(m=>'<div><div class="mk">'+m[0]+'</div><div class="mv">'+m[1]+'</div></div>').join('');
     const stCls = done?' fin':((r.status==='출항완료'||r.status==='입고완료')?' mid':'');
-    const ebtns = '';   // Firebase 모드: 화물 데이터는 시트에서만 수정 (읽기 전용)
+    const chBadge = showChannel && r.channel ? '<span class="badge b-ch">'+(CHANNEL_NAME[r.channel]||r.channel)+'</span>' : '';
     return divider + '<div class="ship'+(isAir?' air':'')+(done?' donecard':'')+'">'
       +'<div class="top">'
       +'<span class="badge '+(isAir?'b-air':'b-sea')+'">'+(isAir?'AIR':'SEA')+'</span>'
+      + chBadge
       +'<span class="co">'+esc(r.company)+'</span>'
       +(ref?'<span class="ref">'+ref+'</span>':'')
       +'<span class="badge b-stat'+stCls+'">'+(done?statLabel('청구완료'):statLabel(r.status))+'</span>'
-      + ebtns
       +'</div>'
       +'<div class="body"><div class="meta">'+meta+'</div><div class="track">'+track+'</div></div>'
       +'</div>';
   }).join('');
 }
 
-/* ══════════ 편집 기능 (관리자) ══════════ */
-let editIdx = null;
-
-function markDirty(){
-  dirty = true;
-  document.getElementById('dirtyFlag').classList.remove('hidden');
-}
-window.addEventListener('beforeunload', e=>{ if(dirty){ e.preventDefault(); e.returnValue=''; } });
-
-function modeFields(){
-  const isAir = document.getElementById('f_mode').value==='air';
-  document.getElementById('seaFields').classList.toggle('hidden', isAir);
-  document.getElementById('airFields').classList.toggle('hidden', !isAir);
-  document.getElementById('depLbl').textContent = isAir ? '출항 (ETD)' : '부산 출항 (ETD)';
-}
-
-function openShipModal(idx){
-  editIdx = (typeof idx==='number') ? idx : null;
-  const r = editIdx!==null ? DATA.rows[editIdx] : null;
-  document.getElementById('shipModalTitle').textContent = r ? '건 수정 — '+r.company : '새 건 추가';
-  document.getElementById('f_company').value = r?.company||'';
-  document.getElementById('f_mode').value = r?.mode||'sea';
-  document.getElementById('f_status').value = r?.status||'접수';
-  document.getElementById('f_no').value = r?.no||'';
-  document.getElementById('f_bk').value = r?.bk||'';
-  document.getElementById('f_vessel').value = r?.vessel ? String(r.vessel).split('\n').filter(x=>x.trim()&&!/^\d+-\d+/.test(x.trim())).join(' · ') : '';
-  document.getElementById('f_type').value = (r?.type||'항공 특송').includes('에어카고')?'에어카고':'항공 특송';
-  document.getElementById('f_product').value = r?.product||'';
-  document.getElementById('f_qty').value = r?.qty||'';
-  document.getElementById('f_order_date').value = /^\d{4}-\d{2}-\d{2}$/.test(r?.order_date||'') ? r.order_date : '';
-  document.getElementById('f_export_permit').value = r?.export_permit||'';
-  document.getElementById('f_pickup').value = r?.pickup||'';
-  document.getElementById('f_depart').value = r ? (r.mode==='air'?(r.departure||''):(r.etd_busan||'')) : '';
-  document.getElementById('f_flow_inbound').value = r?.flow_inbound||'';
-  modeFields();
-  document.getElementById('shipModal').classList.remove('hidden');
-}
-function closeModal(id){ document.getElementById(id).classList.add('hidden'); }
-
-function saveShip(){
-  const company = document.getElementById('f_company').value.trim();
-  if(!company){ alert('업체명을 입력하세요.'); return; }
-  const mode = document.getElementById('f_mode').value;
-  const no = document.getElementById('f_no').value.trim();
-  const order = document.getElementById('f_order_date').value;
-  let month = null;
-  const mNo = no.match(/^(\d+)-/); const mOd = order.match(/^\d{4}-(\d{2})/);
-  if(mNo) month = parseInt(mNo[1]); else if(mOd) month = parseInt(mOd[1]);
-
-  const rec = {
-    no, mode, company, month,
-    status: document.getElementById('f_status').value,
-    order_date: order,
-    product: document.getElementById('f_product').value.trim(),
-    qty: document.getElementById('f_qty').value.trim(),
-    export_permit: document.getElementById('f_export_permit').value.trim(),
-    pickup: document.getElementById('f_pickup').value.trim(),
-    flow_inbound: document.getElementById('f_flow_inbound').value.trim(),
-    shipper: company + ' (애드캐리)',
-  };
-  const dep = document.getElementById('f_depart').value.trim();
-  if(mode==='sea'){
-    rec.bk = document.getElementById('f_bk').value.trim();
-    rec.vessel = document.getElementById('f_vessel').value.trim();
-    rec.etd_busan = dep;
-  } else {
-    rec.type = document.getElementById('f_type').value;
-    rec.departure = dep;
-  }
-  if(editIdx!==null) DATA.rows[editIdx] = Object.assign({}, DATA.rows[editIdx], rec);
-  else DATA.rows.push(rec);
-  markDirty(); closeModal('shipModal'); render();
-}
-
-function delShip(idx){
-  const r = DATA.rows[idx];
-  if(!confirm('['+r.company+'] '+(r.bk||r.no||'')+' 건을 삭제할까요?')) return;
-  DATA.rows.splice(idx,1);
-  markDirty(); render();
-}
-
 /* ── 접속 코드 관리 ── */
-function openCodeModal(){
-  renderCodes();
-  document.getElementById('codeModal').classList.remove('hidden');
+function openCodeModal(){ renderCodes(); document.getElementById('codeModal').classList.remove('hidden'); }
+function closeModal(id){ document.getElementById(id).classList.add('hidden'); }
+function cRoleChange(){
+  const role = document.getElementById('c_role').value;
+  document.getElementById('cChannelFld').classList.toggle('hidden', role!=='viewAll');
 }
 function renderCodes(){
-  const roleLabel = a => a.role==='admin' ? (a.label||'이노마드') : (a.role==='viewAll' ? '애드캐리' : '업체');
+  const roleLabel = a => a.role==='admin' ? '이노마드'
+    : a.role==='viewAll' ? '파트너·'+(CHANNEL_NAME[a.channel]||a.channel)
+    : '업체';
   document.getElementById('codeList').innerHTML = Object.entries(ACCESS).map(([code,a])=>
     '<div class="coderow"><span class="cc">'+esc(code)+'</span><span class="cn2">'+esc(a.name)+'</span>'
     +'<span class="cr">'+roleLabel(a)+'</span>'
@@ -841,605 +674,256 @@ function addCode(){
   const role = document.getElementById('c_role').value;
   if(!code||!name){ alert('코드와 업체명을 모두 입력하세요.'); return; }
   if(ACCESS[code]){ alert('이미 존재하는 코드입니다.'); return; }
-  ACCESS[code] = role==='admin' ? {role:'admin',name,label:'이노마드'}
-              : role==='viewAll' ? {role:'viewAll',name,label:'PARTNER'}
-              : {company:name,name};
+  if(role==='admin') ACCESS[code] = {role:'admin',name,label:'이노마드'};
+  else if(role==='viewAll') ACCESS[code] = {role:'viewAll',name,label:'PARTNER',channel:document.getElementById('c_channel').value};
+  else ACCESS[code] = {company:name,name};
   document.getElementById('c_code').value=''; document.getElementById('c_name').value='';
   markDirty(); renderCodes();
 }
 function delCode(code){
   if(!confirm('코드 '+code+' ('+ACCESS[code].name+')를 삭제할까요? 해당 코드로는 더 이상 접속할 수 없습니다.')) return;
-  delete ACCESS[code];
-  markDirty(); renderCodes();
+  delete ACCESS[code]; markDirty(); renderCodes();
 }
+function markDirty(){ dirty = true; document.getElementById('dirtyFlag').classList.remove('hidden'); }
+window.addEventListener('beforeunload', e=>{ if(dirty){ e.preventDefault(); e.returnValue=''; } });
 
-/* ══════════ HTML 다운로드 (자가 저장) ══════════ */
+/* ── HTML 다운로드 (접속 코드 변경 저장) ── */
 function downloadHTML(){
-  /* 1. 상태 JSON 갱신 — 화물 rows 는 Firestore 실시간 소스이므로 저장 파일엔 비워둠.
-        access(접속 코드)만 갱신 저장. */
-  const saveData = Object.assign({}, DATA, {rows:[], _fallback:'Firestore 실시간 데이터로 대체됨'});
-  const json = JSON.stringify({access:ACCESS, data:saveData, invoices:INVOICES, showCompleted:SHOW_COMPLETED}, null, 1);
-  /* 2. 문서 복제 후 초기 화면 상태로 리셋 */
+  const json = JSON.stringify({access:ACCESS}, null, 1).replace(/<\/script/gi,'<\\/script');
   const clone = document.documentElement.cloneNode(true);
-  const st = clone.querySelector('#portal-state');
-  st.textContent = json.replace(/<\/script/gi,'<\\/script');
+  clone.querySelector('#portal-state').textContent = json;
   clone.querySelector('#gate').style.display = '';
   clone.querySelector('#app').style.display = 'none';
   clone.querySelector('#code').setAttribute('value','');
-  clone.querySelector('#cards').innerHTML = '';
-  clone.querySelector('#cofilter').innerHTML = '';
-  clone.querySelector('#introMsg').innerHTML = '';
-  clone.querySelector('#codeList').innerHTML = '';
+  ['cards','cofilter','introMsg','codeList','voyList','voyFilter'].forEach(id=>{ const el=clone.querySelector('#'+id); if(el) el.innerHTML=''; });
   clone.querySelectorAll('.nav>button').forEach(b=>b.classList.toggle('on', b.id==='nv0'));
   clone.querySelector('#pg0').classList.remove('hidden');
   ['pg1','pg2'].forEach(id=>clone.querySelector('#'+id).classList.add('hidden'));
   clone.querySelector('#dirtyFlag').classList.add('hidden');
   clone.querySelector('#toolbar').classList.add('hidden');
   clone.querySelectorAll('.overlay').forEach(o=>o.classList.add('hidden'));
-  /* 3. 파일로 저장 */
   const html = '<!DOCTYPE html>\n' + clone.outerHTML;
   const d = new Date();
-  const fname = 'enomad-adcarry-portal_' + d.toISOString().slice(0,10).replace(/-/g,'') + '.html';
   const blob = new Blob([html], {type:'text/html;charset=utf-8'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = fname;
-  a.click();
-  URL.revokeObjectURL(a.href);
-  dirty = false;
-  document.getElementById('dirtyFlag').classList.add('hidden');
-  DATA.exported = d.toISOString().slice(0,10);
+  a.download = 'enomad-tracking-portal_' + d.toISOString().slice(0,10).replace(/-/g,'') + '.html';
+  a.click(); URL.revokeObjectURL(a.href);
+  dirty = false; document.getElementById('dirtyFlag').classList.add('hidden');
 }
 
 /* ══════════ 해상 항차 스케줄 ══════════ */
-let voyMonthFilter = 'upcoming';   // upcoming | all | 특정 월
-
-function parseYMD(s){
-  const m = String(s||'').match(/(\d{4})-(\d{2})-(\d{2})/);
-  return m ? new Date(+m[1], +m[2]-1, +m[3]) : null;
-}
-function voyMonth(v){
-  const m = String(v.round||'').match(/(\d+)월/);
-  return m ? parseInt(m[1]) : null;
-}
-function fmtMD(s){
-  const d = parseYMD(s);
-  return d ? (d.getMonth()+1)+'/'+d.getDate() : (s||'—');
-}
+let voyMonthFilter = 'upcoming';
+function parseYMD(s){ const m=String(s||'').match(/(\d{4})-(\d{2})-(\d{2})/); return m?new Date(+m[1],+m[2]-1,+m[3]):null; }
+function voyMonth(v){ const m=String(v.round||'').match(/(\d+)월/); return m?parseInt(m[1]):null; }
+function fmtMD(s){ const d=parseYMD(s); return d?(d.getMonth()+1)+'/'+d.getDate():(s||'—'); }
 function ddayInfo(v){
-  // 서류마감 기준 D-day
-  const today = new Date(); today.setHours(0,0,0,0);
-  const doc = parseYMD(v.doc_close);
-  const etd = parseYMD(v.etd_busan);
-  if(etd && etd < today) return {state:'closed', tag:'출항완료', cls:'closed', txt:''};
-  if(doc){
-    const diff = Math.round((doc - today)/86400000);
-    if(diff < 0)  return {state:'closed', tag:'마감', cls:'closed', txt:''};
-    if(diff === 0) return {state:'open', tag:'서류마감 오늘', cls:'soon', txt:'D-DAY'};
-    if(diff <= 3) return {state:'open', tag:'마감임박', cls:'soon', txt:'D-'+diff};
-    return {state:'open', tag:'접수중', cls:'open', txt:'D-'+diff};
+  const today=new Date(); today.setHours(0,0,0,0);
+  const doc=parseYMD(v.doc_close), etd=parseYMD(v.etd_busan);
+  if(etd&&etd<today) return {state:'closed',tag:'출항완료',cls:'closed',txt:''};
+  if(doc){ const diff=Math.round((doc-today)/86400000);
+    if(diff<0) return {state:'closed',tag:'마감',cls:'closed',txt:''};
+    if(diff===0) return {state:'open',tag:'서류마감 오늘',cls:'soon',txt:'D-DAY'};
+    if(diff<=3) return {state:'open',tag:'마감임박',cls:'soon',txt:'D-'+diff};
+    return {state:'open',tag:'접수중',cls:'open',txt:'D-'+diff};
   }
-  return {state:'open', tag:'예정', cls:'open', txt:''};
+  return {state:'open',tag:'예정',cls:'open',txt:''};
 }
-/* 오늘 기준 마감·출항이 지나지 않은 항차만 표시 (카고마감 → 서류마감 순) */
 function isVoyOpen(v){
-  const today = new Date(); today.setHours(0,0,0,0);
-  const etd = parseYMD(v.etd_busan);
-  if(etd && etd < today) return false;
-  const close = parseYMD(v.cargo_close) || parseYMD(v.doc_close);
-  if(close && close < today) return false;
+  const today=new Date(); today.setHours(0,0,0,0);
+  const etd=parseYMD(v.etd_busan); if(etd&&etd<today) return false;
+  const close=parseYMD(v.cargo_close)||parseYMD(v.doc_close); if(close&&close<today) return false;
   return true;
 }
-
 function renderVoyages(){
-  const stamp = document.getElementById('voyStamp');
-  const list = document.getElementById('voyList');
-  const filterBox = document.getElementById('voyFilter');
-
+  const stamp=document.getElementById('voyStamp'), list=document.getElementById('voyList'), filterBox=document.getElementById('voyFilter');
   if(!VOYAGES.length){
-    filterBox.innerHTML = '';
+    filterBox.innerHTML='';
     list.innerHTML = fbReady
       ? '<div class="empty"><div class="big">등록된 항차가 없습니다</div>새 항차가 확정되면 자동으로 표시됩니다.</div>'
       : '<div class="empty"><div class="big">항차 스케줄 불러오는 중…</div>구글시트와 동기화된 최신 스케줄을 가져오고 있습니다.</div>';
     return;
   }
-
-  // 정렬: 출항일(sortKey) 기준 — 마감·출항 지난 항차 제외
-  const sorted = VOYAGES.slice()
-    .filter(isVoyOpen)
-    .sort((a,b)=>{
-    const da = parseYMD(a.sortKey||a.etd_busan), db = parseYMD(b.sortKey||b.etd_busan);
+  const sorted = VOYAGES.slice().filter(isVoyOpen).sort((a,b)=>{
+    const da=parseYMD(a.sortKey||a.etd_busan), db=parseYMD(b.sortKey||b.etd_busan);
     if(da&&db) return da-db; if(da) return -1; if(db) return 1; return 0;
   });
-
-  // 다음 항차 = 표시 목록 중 첫 번째
   const nextRound = sorted.length ? sorted[0].round : null;
-
-  // 필터 칩 (월별, 접수 가능 항차만)
-  const months = [...new Set(sorted.map(voyMonth).filter(Boolean))].sort((a,b)=>a-b);
-  filterBox.innerHTML = '<span class="cl">보기:</span>'
+  const months=[...new Set(sorted.map(voyMonth).filter(Boolean))].sort((a,b)=>a-b);
+  filterBox.innerHTML='<span class="cl">보기:</span>'
     +'<button class="chip'+(voyMonthFilter==='upcoming'?' on':'')+'" onclick="setVoyFilter(\'upcoming\')">접수 가능 ('+sorted.length+')</button>'
-    + months.map(m=>{
-      const cnt = sorted.filter(v=>voyMonth(v)===m).length;
-      return '<button class="chip'+(voyMonthFilter===m?' on':'')+'" onclick="setVoyFilter('+m+')">'+m+'월 ('+cnt+')</button>';
-    }).join('');
-
-  // 표시 대상
-  let show = sorted;
-  if(voyMonthFilter!=='upcoming') show = sorted.filter(v=>voyMonth(v)===voyMonthFilter);
-
-  if(!show.length){
-    const msg = !sorted.length
-      ? '현재 접수 가능한 항차가 없습니다'
-      : '해당 조건의 항차가 없습니다';
-    list.innerHTML = '<div class="empty"><div class="big">'+msg+'</div></div>';
-    stamp.textContent = '';
-    return;
-  }
-
-  // 월별 그룹핑
-  const groups = {};
-  show.forEach(v=>{ const m=voyMonth(v)||0; (groups[m]=groups[m]||[]).push(v); });
-  const gmonths = Object.keys(groups).map(Number).sort((a,b)=>a-b);
-
-  list.innerHTML = gmonths.map(m=>{
-    const cards = groups[m].map(v=>voyCard(v, v.round===nextRound)).join('');
-    return '<div class="voy-month"><h3>'+(m?m+'월 콘솔 항차':'기타')+' <span class="cnt">'+groups[m].length+'항차</span></h3>'+cards+'</div>';
-  }).join('');
-
+    +months.map(m=>{const cnt=sorted.filter(v=>voyMonth(v)===m).length; return '<button class="chip'+(voyMonthFilter===m?' on':'')+'" onclick="setVoyFilter('+m+')">'+m+'월 ('+cnt+')</button>';}).join('');
+  let show=sorted;
+  if(voyMonthFilter!=='upcoming') show=sorted.filter(v=>voyMonth(v)===voyMonthFilter);
+  if(!show.length){ list.innerHTML='<div class="empty"><div class="big">'+(!sorted.length?'현재 접수 가능한 항차가 없습니다':'해당 조건의 항차가 없습니다')+'</div></div>'; stamp.textContent=''; return; }
+  const groups={}; show.forEach(v=>{const m=voyMonth(v)||0;(groups[m]=groups[m]||[]).push(v);});
+  const gmonths=Object.keys(groups).map(Number).sort((a,b)=>a-b);
+  list.innerHTML=gmonths.map(m=>'<div class="voy-month"><h3>'+(m?m+'월 콘솔 항차':'기타')+' <span class="cnt">'+groups[m].length+'항차</span></h3>'+groups[m].map(v=>voyCard(v,v.round===nextRound)).join('')+'</div>').join('');
   stamp.textContent = DATA.exported ? '· 갱신 '+DATA.exported : '';
 }
-
-function voyCard(v, isNext){
-  const dd = ddayInfo(v);
-  const steps = [
-    ['서류마감', v.doc_close],
-    ['카고마감', v.cargo_close],
-    ['부산출항', v.etd_busan],
-    ['LA도착', v.eta_la],
-    ['FBA도착(예상)', v.eta_fba],
-  ];
-  const track = steps.map(s=>{
-    const has = !!parseYMD(s[1]);
-    return '<div class="voystep'+(has?' mark':'')+'"><div class="vs-dot"></div>'
-      +'<div class="vs-lbl">'+s[0]+'</div>'
-      +'<div class="vs-date'+(has?'':' empty')+'">'+(has?fmtMD(s[1]):'—')+'</div></div>';
-  }).join('');
-  const tagCls = isNext ? 'next' : dd.cls;
-  const tagTxt = isNext ? '다음 항차' : dd.tag;
+function voyCard(v,isNext){
+  const dd=ddayInfo(v);
+  const steps=[['서류마감',v.doc_close],['카고마감',v.cargo_close],['부산출항',v.etd_busan],['LA도착',v.eta_la],['FBA도착(예상)',v.eta_fba]];
+  const track=steps.map(s=>{const has=!!parseYMD(s[1]); return '<div class="voystep'+(has?' mark':'')+'"><div class="vs-dot"></div><div class="vs-lbl">'+s[0]+'</div><div class="vs-date'+(has?'':' empty')+'">'+(has?fmtMD(s[1]):'—')+'</div></div>';}).join('');
   return '<div class="voycard'+(dd.state==='closed'?' closed':'')+(isNext?' next':'')+'">'
     +'<div class="vc-top"><span class="vc-round">'+esc(v.round)+'</span>'
-    +'<span class="vc-tag '+tagCls+'">'+tagTxt+'</span>'
+    +'<span class="vc-tag '+(isNext?'next':dd.cls)+'">'+(isNext?'다음 항차':dd.tag)+'</span>'
     +(dd.txt?'<span class="vc-dday">'+dd.txt+'</span>':'')
     +'</div><div class="voytrack">'+track+'</div></div>';
 }
-
 function setVoyFilter(f){ voyMonthFilter=f; renderVoyages(); }
 
 /* ══════════ 셀프 견적 계산기 ══════════
-   ★ EDITABLE — 요율표 갱신 시 이 상수 블록만 수정하세요 (기준: 2026년 6월). */
+   ★ EDITABLE — 요율표 갱신 시 이 상수 블록만 수정 (기준: 2026년 6월). */
 const RATE = {
-  usdKrwFallback: 1350,    // 고시환율 조회 실패 시 참고값
-  fxProxyUrl: 'https://enomad-exim-fx.puddle-deer.workers.dev', // Cloudflare Worker (영구 배포: fx-worker에서 wrangler deploy)
-  eximAuthKey: 'dhPKlKHIKqGt7k50ZIc5dD9jwfV1FJSZ',  // 로컬/직접 호출용 (웹은 프록시 사용)
-  adcarryMarkup: 1.1,      // 애드캐리 진행 업체 견적 (+10%)
-  air: {
-    perKg: 13,            // $/kg 기준 (10kg 이상 flat) → 애드캐리 $14.3
-    minKg: 10,            // 최소 과금 중량
-    volDivisor: 5000,     // 부피중량 = L*W*H/5000
-    permitKrw: 33000,     // 면장 발급 대행 (원)
-    unload: { box: 3, pallet: 15, label: 0.5 },  // 미국 출고비 (개당 $)
-  },
+  usdKrw: 1350,
+  air: { perKg:13, minKg:10, volDivisor:5000, permitKrw:33000, unload:{box:3,pallet:15,label:0.5} },
   sea: {
-    // CBM 요율표 (KOREA OCEAN DOOR TO ENOMAD WAREHOUSE LAX, DDP)
-    table: {0.5:461.90, 1:530.30, 2:803.90, 3:1068.95, 4:1316.05, 5:1569.70,
-            6:1820.50, 7:2047.64, 8:2267.95, 9:2491.10, 10:2676.92},
-    maxCbm: 10,
-    permitMinKrw: 33000,  // 면장 대행 최소 (At Cost, 최소 33,000원)
-    palletBase: { w: 110, d: 110, thickness: 12, maxStackH: 160 },  // 110×110 팔렛, 적재 높이 160cm 초과 시 분할
+    table:{0.5:461.90,1:530.30,2:803.90,3:1068.95,4:1316.05,5:1569.70,6:1820.50,7:2047.64,8:2267.95,9:2491.10,10:2676.92},
+    maxCbm:10, permitMinKrw:33000, palletBase:{w:110,d:110,thickness:12}
   }
 };
-
-let qCurrentMode = 'sea';
+let qCurrentMode='sea';
 function qMode(m){
-  qCurrentMode = m;
-  document.getElementById('qtSea').classList.toggle('on', m==='sea');
-  document.getElementById('qtAir').classList.toggle('on', m==='air');
-  document.getElementById('qSeaForm').classList.toggle('hidden', m!=='sea');
-  document.getElementById('qAirForm').classList.toggle('hidden', m!=='air');
-  if(m==='sea') calcSea(); else calcAir();
+  qCurrentMode=m;
+  document.getElementById('qtSea').classList.toggle('on',m==='sea');
+  document.getElementById('qtAir').classList.toggle('on',m==='air');
+  document.getElementById('qSeaForm').classList.toggle('hidden',m!=='sea');
+  document.getElementById('qAirForm').classList.toggle('hidden',m!=='air');
+  if(m==='sea'){ if(!document.getElementById('palletRows').children.length) addPalletRow(); calcSea(); } else calcAir();
 }
 function qSeaTypeChange(){
-  const t = document.querySelector('input[name="qSeaType"]:checked').value;
-  document.getElementById('qSeaCbm').classList.toggle('hidden', t!=='cbm');
-  document.getElementById('qSeaPallet').classList.toggle('hidden', t!=='pallet');
-  document.getElementById('qSeaBox').classList.toggle('hidden', t!=='box');
-  if(t==='pallet') initPalletRows();
+  const t=document.querySelector('input[name="qSeaType"]:checked').value;
+  document.getElementById('qSeaCbm').classList.toggle('hidden',t!=='cbm');
+  document.getElementById('qSeaPallet').classList.toggle('hidden',t!=='pallet');
+  document.getElementById('qSeaBox').classList.toggle('hidden',t!=='box');
+  if(t==='pallet' && !document.getElementById('palletRows').children.length) addPalletRow();
   calcSea();
 }
-
-let palletRowSeq = 0;
-function palletRowHtml(){
-  const i = palletRowSeq++;
-  return '<div class="pallet-row" data-id="'+i+'">'
-    +'<div class="pallet-row-hd"><span>팔렛</span>'
-    +'<button type="button" class="pallet-rm hidden" onclick="removePalletRow(this)">삭제</button></div>'
+let palletIdx=0;
+function addPalletRow(){
+  palletIdx++;
+  const id=palletIdx;
+  const div=document.createElement('div');
+  div.className='pallet-row'; div.id='prow_'+id;
+  div.innerHTML='<div class="pallet-row-hd"><span>팔렛</span>'
+    +'<button class="pallet-rm" onclick="rmPalletRow('+id+')">✕ 삭제</button></div>'
     +'<div class="q-row">'
-    +'<div class="fld"><label>가로 (cm)</label><input class="p-l" type="number" placeholder="110" oninput="calcSea()"></div>'
-    +'<div class="fld"><label>세로 (cm)</label><input class="p-w" type="number" placeholder="110" oninput="calcSea()"></div>'
-    +'<div class="fld"><label>높이 (cm)</label><input class="p-h" type="number" placeholder="120" oninput="calcSea()"></div>'
-    +'<div class="fld"><label>팔렛 수</label><input class="p-q" type="number" value="1" min="1" oninput="calcSea()"></div>'
-    +'</div></div>';
+    +'<div class="fld"><label>가로(cm)</label><input type="number" class="pl-l" placeholder="110" oninput="calcSea()"></div>'
+    +'<div class="fld"><label>세로(cm)</label><input type="number" class="pl-w" placeholder="110" oninput="calcSea()"></div>'
+    +'<div class="fld"><label>높이(cm)</label><input type="number" class="pl-h" placeholder="120" oninput="calcSea()"></div>'
+    +'<div class="fld"><label>수량</label><input type="number" class="pl-q" value="1" min="1" oninput="calcSea()"></div>'
+    +'</div>';
+  document.getElementById('palletRows').appendChild(div);
+  relabelPallets();
 }
-function initPalletRows(){
-  const box = document.getElementById('palletRows');
-  if(!box.children.length) addPalletRow(true);
-}
-function addPalletRow(silent){
-  document.getElementById('palletRows').insertAdjacentHTML('beforeend', palletRowHtml());
-  syncPalletRowUi();
-  if(!silent) calcSea();
-}
-function removePalletRow(btn){
-  const rows = document.querySelectorAll('#palletRows .pallet-row');
-  if(rows.length <= 1) return;
-  btn.closest('.pallet-row').remove();
-  syncPalletRowUi();
-  calcSea();
-}
-function syncPalletRowUi(){
-  const rows = document.querySelectorAll('#palletRows .pallet-row');
-  rows.forEach((row, idx)=>{
-    row.querySelector('.pallet-row-hd span').textContent = rows.length > 1 ? '팔렛 '+(idx+1) : '팔렛';
-    row.querySelector('.pallet-rm').classList.toggle('hidden', rows.length <= 1);
-  });
-}
-function readPalletRows(){
-  const lines = [];
-  let cbm = 0;
-  document.querySelectorAll('#palletRows .pallet-row').forEach(row=>{
-    const l = parseFloat(row.querySelector('.p-l').value)||0;
-    const w = parseFloat(row.querySelector('.p-w').value)||0;
-    const h = parseFloat(row.querySelector('.p-h').value)||0;
-    const q = parseFloat(row.querySelector('.p-q').value)||1;
-    if(l && w && h){
-      const rowCbm = l*w*h/1e6*q;
-      cbm += rowCbm;
-      lines.push(q+'PLT × '+l+'×'+w+'×'+h+'cm = '+rowCbm.toFixed(3)+'m³');
-    }
-  });
-  return { cbm, calcNote: lines.join('<br>') };
+function rmPalletRow(id){ const el=document.getElementById('prow_'+id); if(el){el.remove(); relabelPallets(); calcSea();} }
+function relabelPallets(){
+  [...document.getElementById('palletRows').children].forEach((row,i)=>{ row.querySelector('.pallet-row-hd span').textContent='팔렛 #'+(i+1); });
 }
 
 const won = n => '₩'+Math.round(n).toLocaleString('ko-KR');
 const usd = n => '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 const numOf = id => parseFloat(document.getElementById(id).value)||0;
-
-/* 애드캐리 채널 업체·파트너 견적 (+10%), 이노마드 admin은 기준 요율 */
-const isAdcarryQuote = () => session && session.role !== 'admin';
-function qMarkup(){ return isAdcarryQuote() ? RATE.adcarryMarkup : 1; }
-function airPerKg(){ return Math.round(RATE.air.perKg * qMarkup() * 100) / 100; }
-function quoteSeaUsd(base){ return Math.round(base * qMarkup() * 100) / 100; }
-
-/* ── 환율 (견적일 기준 · USD 송금 고시환율) ── */
-let FX = { rate:null, date:null, loading:false, viewedOn:null };
-function kstYmd(daysAgo=0){
-  const kst = new Date(new Date().toLocaleString('en-US', {timeZone:'Asia/Seoul'}));
-  kst.setDate(kst.getDate() - daysAgo);
-  return kst.getFullYear()
-    +String(kst.getMonth()+1).padStart(2,'0')
-    +String(kst.getDate()).padStart(2,'0');
-}
-function fmtYmd(ymd){ return String(ymd||'').replace(/(\d{4})(\d{2})(\d{2})/,'$1-$2-$3'); }
-function usdKrwNow(){ return FX.rate || RATE.usdKrwFallback; }
-function parseEximUsd(data){
-  if(!Array.isArray(data)) return null;
-  const usd = data.find(r => Number(r.result) === 1 && String(r.cur_unit||'').startsWith('USD'));
-  if(!usd || !usd.tts) return null;
-  const rate = parseFloat(String(usd.tts).replace(/,/g,''));
-  return rate > 0 ? rate : null;
-}
-async function fetchEximJson(url){
-  try{
-    const res = await fetch(url);
-    if(!res.ok) return null;
-    return await res.json();
-  }catch(e){ return null; }
-}
-async function fetchEximForDate(searchdate){
-  // 1) Firebase Function 프록시 (웹 CORS 우회)
-  if(RATE.fxProxyUrl){
-    const data = await fetchEximJson(RATE.fxProxyUrl+'?date='+searchdate);
-    const rate = parseEximUsd(data);
-    if(rate) return {rate, date:searchdate};
-  }
-  // 2) 직접 호출 (로컬 등 CORS 허용 환경)
-  const key = RATE.eximAuthKey;
-  if(key){
-    const url = 'https://oapi.koreaexim.go.kr/site/program/financial/exchangeJSON'
-      +'?authkey='+encodeURIComponent(key)+'&searchdate='+searchdate+'&data=AP01';
-    const rate = parseEximUsd(await fetchEximJson(url));
-    if(rate) return {rate, date:searchdate};
-  }
-  return null;
-}
-function waitFxMeta(ms){
-  return new Promise(resolve=>{
-    if(window.__fxMeta?.rate) return resolve(window.__fxMeta);
-    const t = setTimeout(()=>resolve(window.__fxMeta||null), ms);
-    const prev = window.__onFxMetaReady;
-    window.__onFxMetaReady = meta=>{
-      if(prev) prev(meta);
-      clearTimeout(t);
-      resolve(meta||window.__fxMeta||null);
-    };
-  });
-}
-function applyFx(fx){
-  FX = {rate:fx.rate, date:fx.date, loading:false, viewedOn:kstYmd()};
-  sessionStorage.setItem('enomad_fx', JSON.stringify(FX));
-  updateFxStamp();
-  qRefreshResult();
-}
-function fmtFxRate(r){
-  return Number(r).toLocaleString('ko-KR',{minimumFractionDigits:2,maximumFractionDigits:2});
-}
-function fmtFxShort(){
-  if(FX.rate && FX.date){
-    return '수출입은행 송금 고시 '+fmtFxRate(FX.rate)+'원 · '+fmtYmd(FX.date)+' 기준';
-  }
-  return '환율 '+RATE.usdKrwFallback.toLocaleString('ko-KR')+'원 (고시환율 미연동·참고값)';
-}
-function updateFxStamp(){
-  const el = document.getElementById('qFxStamp');
-  if(!el) return;
-  el.textContent = FX.loading ? ' · 환율 조회 중…' : (' · '+fmtFxShort());
-}
-function qRefreshResult(){
-  if(qCurrentMode==='sea') calcSea(); else calcAir();
-}
-async function loadFxRate(force=false){
-  const viewedOn = kstYmd();
-  if(!force){
-    const cached = sessionStorage.getItem('enomad_fx');
-    if(cached){
-      const c = JSON.parse(cached);
-      if(c.viewedOn === viewedOn && c.rate){
-        FX = {...c, loading:false};
-        updateFxStamp();
-        return;
-      }
-    }
-    if(FX.rate && FX.viewedOn === viewedOn) return;
-  }
-
-  FX.loading = true;
-  updateFxStamp();
-
-  if(!window.__fxMeta?.rate && !force){
-    const meta = await waitFxMeta(2500);
-    if(meta?.rate){
-      applyFx({rate:meta.rate, date:meta.date || viewedOn});
-      return;
-    }
-  }
-
-  if(window.__fxMeta?.rate){
-    applyFx({rate:window.__fxMeta.rate, date:window.__fxMeta.date || viewedOn});
-    return;
-  }
-
-  if(RATE.fxProxyUrl || RATE.eximAuthKey){
-    // 견적 확인일 고시환율 우선, 휴일·미고시 시 직전 영업일
-    for(let i=0; i<10; i++){
-      const fx = await fetchEximForDate(kstYmd(i));
-      if(fx){ applyFx(fx); return; }
-    }
-  }
-
-  FX = {rate:null, date:null, loading:false, viewedOn};
-  updateFxStamp();
-  qRefreshResult();
-}
-
-/* ── 해상 견적 ── */
-function billCbm(cbm){
-  // 0.1 미만은 올리지 않음: 1.09→1, 1.1~1.59→1.5, 1.6~→2
-  const n = Math.floor(cbm + 1e-9);
-  const frac = Math.round((cbm - n) * 100) / 100;
-  if(frac < 0.1) return n;
-  if(frac < 0.6) return n + 0.5;
-  return n + 1;
-}
-function fmtCbm(v){ return (Math.round(v * 2) / 2).toFixed(1); }
+function ceilHalf(x){ return Math.ceil(x*2)/2; }
 function seaRate(cbm){
-  let billed = billCbm(cbm);
-  if(billed < 0.5) billed = 0.5;
-  if(billed > RATE.sea.maxCbm) return {billed, rate:null, over:true};
-
-  const t = RATE.sea.table;
-  if(t[billed] != null) return {billed, rate:t[billed]};
-
-  // 0.5 단위 청구: 정수 구간 사이 선형 보간 (예: 3.5 → 3·4 CBM 요율 중간)
-  const lo = Math.floor(billed);
-  const hi = lo + 1;
-  if(t[lo] != null && t[hi] != null){
-    const frac = billed - lo;
-    const rate = t[lo] + (t[hi] - t[lo]) * frac;
-    return {billed, rate: Math.round(rate * 100) / 100};
-  }
-
-  const keys = Object.keys(t).map(Number).sort((a,b)=>a-b);
-  for(const k of keys){ if(k>=billed) return {billed, rate:t[k], tier:k}; }
-  return {billed, rate:null, over:true};
-}
-/* 박스 → 110×110 팔렛 적재 CBM (160cm 초과 시 팔렛 분할) */
-function estimateBoxPalletCbm(l, w, h, q){
-  const base = RATE.sea.palletBase;
-  const footprint = base.w * base.d;
-  const maxStackH = base.maxStackH || 160;
-  const boxVol = l * w * h * q;
-  const stackH = boxVol / footprint;
-  const numPallets = Math.max(1, Math.ceil(stackH / maxStackH));
-  let cbm = 0, remaining = boxVol;
-  for(let i = 0; i < numPallets; i++){
-    const vol = Math.min(remaining, footprint * maxStackH);
-    const hStack = vol / footprint;
-    cbm += (footprint * (hStack + base.thickness)) / 1e6;
-    remaining -= vol;
-  }
-  return { cbm, numPallets, stackH, maxStackH };
+  let billed=ceilHalf(cbm); if(billed<0.5) billed=0.5;
+  if(billed>RATE.sea.maxCbm) return {billed,rate:null,over:true};
+  const t=RATE.sea.table;
+  if(t[billed]!=null) return {billed,rate:t[billed]};
+  const keys=Object.keys(t).map(Number).sort((a,b)=>a-b);
+  for(const k of keys){ if(k>=billed) return {billed,rate:t[k],tier:k}; }
+  return {billed,rate:null,over:true};
 }
 function calcSea(){
-  const box = document.getElementById('qResult');
-  const type = document.querySelector('input[name="qSeaType"]:checked').value;
-  let cbm = 0, calcNote = '';
-
-  if(type==='cbm'){
-    cbm = numOf('s_cbm');
-  } else if(type==='pallet'){
-    const pal = readPalletRows();
-    cbm = pal.cbm;
-    calcNote = pal.calcNote;
-  } else { // box → 110×110 팔렛 적재 추정
+  const box=document.getElementById('qResult');
+  const type=document.querySelector('input[name="qSeaType"]:checked').value;
+  let cbm=0, calcNote='';
+  if(type==='cbm'){ cbm=numOf('s_cbm'); }
+  else if(type==='pallet'){
+    let parts=[];
+    [...document.getElementById('palletRows').children].forEach((row,i)=>{
+      const l=+row.querySelector('.pl-l').value||0, w=+row.querySelector('.pl-w').value||0, h=+row.querySelector('.pl-h').value||0, q=+row.querySelector('.pl-q').value||1;
+      if(l&&w&&h){ const c=(l*w*h/1e6)*q; cbm+=c; parts.push('#'+(i+1)+' '+q+'개 '+c.toFixed(2)+'m³'); }
+    });
+    if(parts.length) calcNote=parts.join(' · ')+' = '+cbm.toFixed(3)+' CBM';
+  } else {
     const l=numOf('b_l'), w=numOf('b_w'), h=numOf('b_h'), q=numOf('b_qty');
     if(l&&w&&h&&q){
-      const est = estimateBoxPalletCbm(l, w, h, q);
-      cbm = est.cbm;
-      const base = RATE.sea.palletBase;
-      const boxVol = l*w*h*q;
-      calcNote = '박스 '+q+'개(총 '+(boxVol/1e6).toFixed(3)+'m³) → '
-        +base.w+'×'+base.d+'cm 팔렛 '+est.numPallets+'PLT'
-        +(est.numPallets>1?' (적재높이 '+est.maxStackH+'cm 기준 분할)':'')
-        +' · 약 '+cbm.toFixed(3)+' CBM';
+      const boxVol=l*w*h*q, base=RATE.sea.palletBase;
+      const stackH=boxVol/(base.w*base.d), totalH=stackH+base.thickness;
+      cbm=(base.w*base.d*totalH)/1e6;
+      calcNote='박스 '+q+'개(총 '+(boxVol/1e6).toFixed(3)+'m³) → '+base.w+'×'+base.d+'cm 팔렛 적재 시 약 '+cbm.toFixed(3)+' CBM';
     }
   }
-
-  if(!cbm){ box.innerHTML = '<div class="qr-empty">화물 정보를 입력하면<br>예상 견적이 표시됩니다.</div>'; return; }
-
-  const r = seaRate(cbm);
+  if(!cbm){ box.innerHTML='<div class="qr-empty">화물 정보를 입력하면<br>예상 견적이 표시됩니다.</div>'; return; }
+  const r=seaRate(cbm);
   if(r.over){
-    box.innerHTML = '<div class="qr-chip">해상 LCL · DDP</div>'
+    box.innerHTML='<div class="qr-chip">해상 LCL · DDP</div>'
       +'<div class="qr-line"><span class="k">입력 부피</span><span class="v">'+cbm.toFixed(3)+' CBM</span></div>'
-      +'<div class="qr-line"><span class="k">청구 CBM</span><span class="v">'+fmtCbm(r.billed)+' CBM</span></div>'
+      +'<div class="qr-line"><span class="k">청구 CBM (0.5 올림)</span><span class="v">'+r.billed+' CBM</span></div>'
       +'<div class="qr-over">10 CBM 초과는 FCL(컨테이너) 검토가 유리할 수 있습니다.<br>별도 문의: sel@enomad.co.kr</div>';
     return;
   }
-
-  const rate = quoteSeaUsd(r.rate);
-  const krw = rate*usdKrwNow();
-  box.innerHTML = '<div class="qr-chip">해상 LCL · DDP (부산 → LA 창고)</div>'
-    +'<div class="qr-total">예상 운임 (올인)</div>'
-    +'<div class="qr-big">'+usd(rate)+'</div>'
-    +'<div class="qr-krw">≈ '+won(krw)+' <small>('+fmtFxShort()+')</small></div>'
-    + (calcNote?'<div class="qr-note" style="margin-top:10px">'+calcNote+'</div>':'')
+  const krw=r.rate*RATE.usdKrw;
+  box.innerHTML='<div class="qr-chip">해상 LCL · DDP (부산 → LA 창고)</div>'
+    +'<div class="qr-total">예상 운임 (올인)</div><div class="qr-big">'+usd(r.rate)+'</div>'
+    +'<div class="qr-krw">≈ '+won(krw)+' <small>(환율 '+RATE.usdKrw+'원 기준)</small></div>'
+    +(calcNote?'<div class="qr-note" style="margin-top:10px">'+calcNote+'</div>':'')
     +'<div class="qr-sec">산정 내역</div>'
     +'<div class="qr-line"><span class="k">입력 부피</span><span class="v">'+cbm.toFixed(3)+' CBM</span></div>'
-    +'<div class="qr-line"><span class="k">청구 CBM <span style="color:var(--ink-3);font-size:11px">(0.1 미만 유지 · 0.5/1.0 구간)</span></span><span class="v">'+fmtCbm(r.billed)+' CBM</span></div>'
-    +'<div class="qr-line"><span class="k">적용 요율</span><span class="v">'+usd(rate)+'</span></div>'
-    +'<div class="qr-atcost"><strong>별도 비용 (At Cost)</strong><br>'
-      +'· 관세(DUTY): HS Code별 상이, 실비 청구<br>'
-      +'· 면장 발급 대행: 실비 (최소 ₩33,000)</div>'
+    +'<div class="qr-line"><span class="k">청구 CBM <span style="color:var(--ink-3);font-size:11px">(0.5 올림·데드스페이스)</span></span><span class="v">'+r.billed+' CBM'+(r.tier?' → '+r.tier+' 구간':'')+'</span></div>'
+    +'<div class="qr-line"><span class="k">적용 요율</span><span class="v">'+usd(r.rate)+'</span></div>'
+    +'<div class="qr-atcost"><strong>별도 비용 (At Cost)</strong><br>· 관세(DUTY): HS Code별 상이, 실비 청구<br>· 면장 발급 대행: 실비 (최소 ₩33,000)</div>'
     +'<div class="qr-note" style="margin-top:10px">※ 위 운임은 국내 픽업 + 통관대행 포함, ENOMAD 미국 창고 도착까지의 올인 비용입니다.</div>';
 }
-
-/* ── 항공 견적 ── */
 function calcAir(){
-  const box = document.getElementById('qResult');
+  const box=document.getElementById('qResult');
   const l=numOf('a_l'), w=numOf('a_w'), h=numOf('a_h'), q=numOf('a_qty')||1, kg=numOf('a_kg');
-
-  if(!(l&&w&&h) && !kg){ box.innerHTML = '<div class="qr-empty">화물 정보를 입력하면<br>예상 견적이 표시됩니다.</div>'; return; }
-
-  const volKg = (l&&w&&h) ? (l*w*h/RATE.air.volDivisor)*q : 0;
-  const rawChargeable = Math.max(volKg, kg);
-  const chargeable = Math.max(rawChargeable, RATE.air.minKg);   // 최소 10kg
-  const perKg = airPerKg();
-  const freight = chargeable*perKg;
-  const permit = document.getElementById('a_permit').checked ? RATE.air.permitKrw : 0;
-  const freightKrw = freight*usdKrwNow();
-  const totalKrw = freightKrw + permit;
-  const heavier = volKg>kg ? '부피중량' : '실중량';
-
-  box.innerHTML = '<div class="qr-chip">항공 · KR → LA 창고 (올인)</div>'
+  if(!(l&&w&&h) && !kg){ box.innerHTML='<div class="qr-empty">화물 정보를 입력하면<br>예상 견적이 표시됩니다.</div>'; return; }
+  const volKg=(l&&w&&h)?(l*w*h/RATE.air.volDivisor)*q:0;
+  const chargeable=Math.max(Math.max(volKg,kg),RATE.air.minKg);
+  const freight=chargeable*RATE.air.perKg;
+  const permit=document.getElementById('a_permit').checked?RATE.air.permitKrw:0;
+  const totalKrw=freight*RATE.usdKrw+permit;
+  const heavier=volKg>kg?'부피중량':'실중량';
+  box.innerHTML='<div class="qr-chip">항공 · KR → LA 창고 (올인)</div>'
     +'<div class="qr-total">예상 운임'+(permit?' + 면장':'')+'</div>'
     +'<div class="qr-big">'+usd(freight)+(permit?' <small>+ ₩33,000</small>':'')+'</div>'
-    +'<div class="qr-krw">≈ '+won(totalKrw)+' <small>('+fmtFxShort()+')</small></div>'
+    +'<div class="qr-krw">≈ '+won(totalKrw)+' <small>(환율 '+RATE.usdKrw+'원 기준)</small></div>'
     +'<div class="qr-sec">중량 산정</div>'
     +'<div class="qr-line"><span class="k">실중량</span><span class="v">'+(kg?kg.toFixed(1)+' kg':'—')+'</span></div>'
     +'<div class="qr-line"><span class="k">부피중량 <span style="color:var(--ink-3);font-size:11px">(L×W×H÷5000×'+q+')</span></span><span class="v">'+(volKg?volKg.toFixed(2)+' kg':'—')+'</span></div>'
     +'<div class="qr-line"><span class="k">청구중량 <span style="color:var(--ink-3);font-size:11px">('+heavier+'·최소10kg)</span></span><span class="v">'+chargeable.toFixed(2)+' kg</span></div>'
-    +'<div class="qr-line"><span class="k">운임 ('+chargeable.toFixed(1)+'kg × $'+perKg.toFixed(1)+')</span><span class="v">'+usd(freight)+'</span></div>'
-    + (permit?'<div class="qr-line"><span class="k">면장 발급 대행</span><span class="v">₩33,000</span></div>':'')
-    +'<div class="qr-atcost"><strong>미국 도착 후 출고비 (별도)</strong><br>'
-      +'· 출고비: 박스 $3 / 팔렛 $15 · 라벨 $0.5<br>'
-      +'· 라스트마일 배송: At Cost (실비)</div>'
-    +'<div class="qr-warehouse"><strong>국내 창고 입고 안내</strong><br>'
-      +'경기 김포시 고촌읍 인향로210번길 24-25<br>담당 최정용 · 010-3251-6102<br>'
-      +'<span style="color:var(--ink-3)">※ 운임은 국내 창고 입고 기준입니다. 국내 픽업 별도.</span></div>';
+    +'<div class="qr-line"><span class="k">운임 ('+chargeable.toFixed(1)+'kg × $13)</span><span class="v">'+usd(freight)+'</span></div>'
+    +(permit?'<div class="qr-line"><span class="k">면장 발급 대행</span><span class="v">₩33,000</span></div>':'')
+    +'<div class="qr-atcost"><strong>미국 도착 후 출고비 (별도)</strong><br>· 출고비: 박스 $3 / 팔렛 $15 · 라벨 $0.5<br>· 라스트마일 배송: At Cost (실비)</div>'
+    +'<div class="qr-warehouse"><strong>국내 창고 입고 안내</strong><br>경기 김포시 고촌읍 인향로210번길 24-25<br>담당 최정용 · 010-3251-6102<br><span style="color:var(--ink-3)">※ 운임은 국내 창고 입고 기준입니다. 국내 픽업 별도.</span></div>';
 }
 
-/* ══════════ Firestore 실시간 브리지 ══════════
-   하단 module 스크립트가 Firestore 스냅샷을 받아 이 함수들을 호출합니다. */
+/* ══════════ Firestore 실시간 브리지 ══════════ */
 function setLive(on){
-  const el = document.getElementById('liveStatus');
-  const txt = document.getElementById('liveText');
+  const el=document.getElementById('liveStatus'), txt=document.getElementById('liveText');
   if(!el) return;
-  el.classList.toggle('on', on);
-  el.classList.toggle('off', !on);
-  txt.textContent = on ? '실시간 연결됨' : '연결 끊김 · 재시도 중';
+  el.classList.toggle('on',on); el.classList.toggle('off',!on);
+  txt.textContent = on?'실시간 연결됨':'연결 끊김 · 재시도 중';
 }
-/* Firestore shipments 스냅샷 → DATA.rows 갱신 후 현재 화면 리렌더 */
-window.__onShipments = function(rows){
-  DATA.rows = rows;
-  fbReady = true;
-  setLive(true);
-  if(session){ render(); }   // 로그인 상태면 즉시 반영
-};
+window.__onShipments = function(rows){ DATA.rows=rows; fbReady=true; setLive(true); if(session) render(); };
 window.__onFbError = function(){ setLive(false); };
-window.__onMeta = function(meta){
-  if(meta && meta.syncedAt){ DATA.exported = String(meta.syncedAt).slice(0,10); if(session) render(); }
-  const tts = meta && (meta.usdTts ?? meta.usd_tts);
-  if(tts){
-    window.__fxMeta = {
-      rate: Number(tts),
-      date: String(meta.fxDate || meta.fx_date || '').replace(/-/g,'') || kstYmd()
-    };
-    if(window.__onFxMetaReady) window.__onFxMetaReady(window.__fxMeta);
-    if(session) loadFxRate(true);
-  }
-};
-window.__onFx = function(data){
-  if(!data?.usdTts && !data?.usd_tts) return;
-  window.__fxMeta = {
-    rate: Number(data.usdTts ?? data.usd_tts),
-    date: String(data.fxDate || data.fx_date || '').replace(/-/g,'') || kstYmd()
-  };
-  if(window.__onFxMetaReady) window.__onFxMetaReady(window.__fxMeta);
-  if(session) loadFxRate(true);
-};
-/* Firestore voyages 스냅샷 → 항차 스케줄 갱신 */
-window.__onVoyages = function(rows){
-  VOYAGES = rows;
-  fbReady = true;
-  // 항차 탭이 열려 있으면 즉시 리렌더
-  if(session && !document.getElementById('pg1').classList.contains('hidden')) renderVoyages();
-};
+window.__onMeta = function(meta){ if(meta&&meta.syncedAt){ DATA.exported=String(meta.syncedAt).slice(0,10); if(session) render(); } };
+window.__onVoyages = function(rows){ VOYAGES=rows; fbReady=true; if(session && !document.getElementById('pg1').classList.contains('hidden')) renderVoyages(); };
 
-/* ── 세션 유지 (탭 닫으면 만료) ── */
+/* ── 세션 유지 ── */
 const saved = sessionStorage.getItem('enomad_track_code');
 if(saved && ACCESS[saved]){ session=ACCESS[saved]; sessionCode=saved; enter(); }
 </script>
 
-<!-- ★ Firebase 실시간 데이터 소스 (modular SDK) ─────────────────────
-     firebaseConfig 만 채우면 shipments 컬렉션을 실시간 구독합니다.
-     access 코드는 위 내장 JSON을 그대로 사용(인증은 코드 방식 유지). -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, collection, doc, onSnapshot }
-  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* ★ EDITABLE — Firebase 콘솔 값으로 교체 (01_firebase_config.js 참고) */
+/* ★ EDITABLE — Firebase 콘솔 값 (애드캐리 포털과 동일 프로젝트) */
 const firebaseConfig = {
   apiKey: "AIzaSyB-wtJewqTS08iI8x4mOQ19JUh4sSMX6qE",
   authDomain: "enomad-adcarry.firebaseapp.com",
@@ -1448,49 +932,20 @@ const firebaseConfig = {
   messagingSenderId: "755125198902",
   appId: "1:755125198902:web:0e695d4c1bf00987b9f897"
 };
-
 try {
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
-
-  await signInAnonymously(auth);   // 규칙: request.auth != null 통과용
-
-  /* shipments 실시간 구독 */
+  await signInAnonymously(auth);
   onSnapshot(collection(db, "shipments"),
-    (snap) => {
-      const rows = [];
-      snap.forEach(d => { const r = d.data(); delete r.updatedAt; delete r._sheetRow; rows.push(r); });
-      window.__onShipments(rows);
-    },
-    (err) => { console.error("shipments 구독 오류:", err); window.__onFbError(); }
-  );
-
-  /* voyages(해상 항차) 실시간 구독 */
+    (snap)=>{ const rows=[]; snap.forEach(d=>{const r=d.data(); delete r.updatedAt; delete r._sheetRow; rows.push(r);}); window.__onShipments(rows); },
+    (err)=>{ console.error("shipments 구독 오류:",err); window.__onFbError(); });
   onSnapshot(collection(db, "voyages"),
-    (snap) => {
-      const rows = [];
-      snap.forEach(d => { const r = d.data(); delete r.updatedAt; rows.push(r); });
-      window.__onVoyages(rows);
-    },
-    (err) => { console.error("voyages 구독 오류:", err); }
-  );
-
-  /* 동기화 메타(마지막 동기화 시각) 구독 */
+    (snap)=>{ const rows=[]; snap.forEach(d=>{const r=d.data(); delete r.updatedAt; rows.push(r);}); window.__onVoyages(rows); },
+    (err)=>{ console.error("voyages 구독 오류:",err); });
   onSnapshot(doc(db, "_meta", "sync"),
-    (d) => { if(d.exists()) window.__onMeta(d.data()); },
-    () => {}
-  );
-
-  /* 환율 메타(선택) — 시트 동기화 시 usdTts 저장하면 프록시 없이도 동작 */
-  onSnapshot(doc(db, "_meta", "fx"),
-    (d) => { if(d.exists()) window.__onFx(d.data()); },
-    () => {}
-  );
-} catch (e) {
-  console.error("Firebase 초기화 실패:", e);
-  window.__onFbError();
-}
+    (d)=>{ if(d.exists()) window.__onMeta(d.data()); }, ()=>{});
+} catch(e){ console.error("Firebase 초기화 실패:",e); window.__onFbError(); }
 </script>
 </body>
 </html>
